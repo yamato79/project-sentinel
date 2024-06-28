@@ -21,6 +21,9 @@ class ProfileController extends Controller
         return Inertia::render('panel/me/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'breadcrumbs' => [
+                ['label' => 'Profile', 'href' => route('panel.profile.edit')],
+            ],
         ]);
     }
 
