@@ -3,7 +3,6 @@ import { Head } from "@inertiajs/vue3";
 import PanelLayout from "@/components/layouts/panel/index.vue";
 import { useForm } from "@inertiajs/vue3";
 import Button from "@/components/button.vue";
-import BreadcrumbItem from "@/components/breadcrumb-item.vue";
 import Card from "@/components/card.vue";
 import Container from "@/components/container.vue";
 import ContentBody from "@/components/content-body.vue";
@@ -58,11 +57,6 @@ const submitForm = () => {
                 <div class="w-px h-6 bg-gray-200"></div>
                 <Paragraph color="muted" size="sm"> Use the form below to create a new stack. </Paragraph>
             </div>
-        </MountedTeleport>
-
-        <MountedTeleport to="#breadcrumbs">
-            <BreadcrumbItem :href="route('panel.stacks.index')"> Stacks </BreadcrumbItem>
-            <BreadcrumbItem :href="route('panel.stacks.create')"> Create </BreadcrumbItem>
         </MountedTeleport>
 
         <Section>

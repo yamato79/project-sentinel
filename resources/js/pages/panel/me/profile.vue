@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Head } from "@inertiajs/vue3";
 import PanelLayout from "@/components/layouts/panel/index.vue";
-import BreadcrumbItem from "@/components/breadcrumb-item.vue";
 import Container from "@/components/container.vue";
 import Heading from "@/components/heading.vue";
 import MountedTeleport from "@/components/mounted-teleport.vue";
@@ -34,10 +33,6 @@ defineProps<{
                 <div class="hidden lg:block w-px h-6 bg-gray-200"></div>
                 <Paragraph color="muted" size="sm" class="hidden lg:block">Manage your account information.</Paragraph>
             </div>
-        </MountedTeleport>
-
-        <MountedTeleport to="#breadcrumbs">
-            <BreadcrumbItem :href="route('panel.profile.edit')"> Profile </BreadcrumbItem>
         </MountedTeleport>
 
         <Section>
