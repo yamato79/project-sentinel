@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Website;
 use App\Models\WebsiteStatus;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class WebsiteSeeder extends Seeder

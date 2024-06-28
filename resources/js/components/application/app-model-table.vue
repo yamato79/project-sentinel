@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { usePage, router } from "@inertiajs/vue3";
 import Button from "@/components/button.vue";
 import Form from "@/components/form/form.vue";
@@ -20,7 +20,7 @@ const props = defineProps<{
     columns: ModelTableColumn[],
     rows: ModelTableRow[],
     meta: ModelTableMeta,
-    links: ModelTableLinks,
+    links: ModelTableLinks
 }>();
 
 const tableHeaderAlignmentClasses = {
@@ -67,9 +67,9 @@ const clearFilterForm = () => {
                     <template v-if="filterForm.searchQuery">
                         <div class="border-r border-gray-800">
                             <Button type="button" class="rounded-none h-full" @click.stop="clearFilterForm">
-                                <div class="py-0.25">
-                                    <FontAwesomeIcon :icon="'fa-solid fa-times'" :class="'text-gray-50'" aria-hidden="true" />
-                                </div>
+                                <template #icon>
+                                    <FontAwesomeIcon icon="fa-solid fa-times" />
+                                </template>
                             </Button>
                         </div>
                     </template>

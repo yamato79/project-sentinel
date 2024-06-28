@@ -3,18 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use \App\Models\Traits\HasSlug;
+use Illuminate\Support\Str;
 
 class MonitorType extends Model
 {
-    use HasSlug;
-
     const RESPONSE_CODE = 1;
+
     const RESPONSE_TIME = 2;
-    const SSL_VALID     = 3;
-    const SSL_EXPIRY    = 4;
+
+    const SSL_VALID = 3;
+
+    const SSL_EXPIRY = 4;
+
     const DOMAIN_EXPIRY = 5;
-    const DOMAIN_NS     = 6;
+
+    const DOMAIN_NS = 6;
 
     /**
      * The table associated with the model.
@@ -47,6 +50,20 @@ class MonitorType extends Model
     protected static function booted()
     {
         parent::booted();
-        static::bootHasSlug();
+
+        static::creating(function ($monitorType) {
+            if (empty($monitorType->slug)) {
+                $monitorType->slug = Str::slug($monitorType->name).'-'.strtolower(Str::random(12));
+            }
+        });
+    }
+
+    /**
+     * The monitor queues that belong to the monitor type.
+     */
+    public function monitorQueues()
+    {
+        return $this->hasMany(MonitorQueue::class, 'monitor_type_id', 'monitor_type_id')
+            ->orderBy('created_at', 'desc');
     }
 }

@@ -38,15 +38,15 @@ class CheckSSLValid implements ShouldQueue
         $hostname = $parsedUrl['host'];
 
         $context = stream_context_create(['ssl' => ['capture_peer_cert' => true]]);
-        $client = stream_socket_client('ssl://' . $hostname . ':443', $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context);
+        $client = stream_socket_client('ssl://'.$hostname.':443', $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context);
         $cert = stream_context_get_params($client)['options']['ssl']['peer_certificate'];
         $certInfo = openssl_x509_parse($cert);
 
         $valid = Carbon::now()->between(Carbon::createFromTimestamp($certInfo['validFrom_time_t']), Carbon::createFromTimestamp($certInfo['validTo_time_t']));
 
-        return json_encode([
+        return [
             'ssl_valid' => $valid,
-        ]);
+        ];
     }
 
     /**

@@ -21,6 +21,9 @@ class StackResource extends JsonResource
             'description' => $this->description,
             'users_count' => $this->when(isset($this->users_count), $this->users_count),
             'websites_count' => $this->when(isset($this->websites_count), $this->websites_count),
+            'created_by_user_id' => $this->created_by_user_id,
+            'created_by_user' => new UserResource($this->whenLoaded('createdByUser')),
+            'users' => UserResource::collection($this->whenLoaded('users')),
         ];
     }
 }

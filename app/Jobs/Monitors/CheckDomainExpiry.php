@@ -41,14 +41,14 @@ class CheckDomainExpiry implements ShouldQueue
             $expirationDate = Carbon::parse(trim($matches[1]));
             $expiresIn = Carbon::now()->diffInDays($expirationDate, false);
 
-            return json_encode([
+            return [
                 'domain_expires_in' => $expiresIn,
-            ]);
+            ];
         }
 
-        return json_encode([
+        return [
             'error' => 'Could not retrieve expiration date',
-        ]);
+        ];
     }
 
     /**

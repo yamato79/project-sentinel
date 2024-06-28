@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Stack;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
 
 class CreateStackRequest extends FormRequest
 {
@@ -12,18 +12,7 @@ class CreateStackRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
-    }
-
-    /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'slug' => Str::slug($this->name) . "-" . Str::random(6),
-            'owner_user_id' => auth()->user()->getKey(),
-        ]);
+        return Gate::allows('create', $this->route('stack'));
     }
 
     /**
@@ -35,7 +24,6 @@ class CreateStackRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:1|max:255',
-            'slug' => 'required|string|min:1|max:255|unique:stacks,slug',
             'description' => 'required|string|min:1|max:255',
         ];
     }

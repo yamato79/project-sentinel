@@ -6,6 +6,10 @@ import Container from "@/components/container.vue";
 import Heading from "@/components/heading.vue";
 import MountedTeleport from "@/components/mounted-teleport.vue";
 import Paragraph from "@/components/paragraph.vue";
+import SectionGridContainer from "@/components/section-grid-container.vue";
+import SectionGridContent from "@/components/section-grid-content.vue";
+import SectionGridSidebar from "@/components/section-grid-sidebar.vue";
+import SectionGrid from "@/components/section-grid.vue";
 import Section from "@/components/section.vue";
 import UpdatePasswordForm from "./_update_password_form.vue";
 import UpdateProfileForm from "./_update_profile_form.vue";
@@ -37,32 +41,32 @@ defineProps<{
         </MountedTeleport>
 
         <Section>
-            <div class="space-y-10 divide-y-2 divide-gray-200 divide-dashed">
-                <div class="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-3">
-                    <div>
+            <SectionGridContainer>
+                <SectionGrid>
+                    <SectionGridSidebar>
                         <Heading :size="5">Personal Information</Heading>
                         <Paragraph color="muted" size="sm" class="mt-1">Information about who the owner of the account is.</Paragraph>
-                    </div>
+                    </SectionGridSidebar>
 
-                    <div class="md:col-span-2">
+                    <SectionGridContent>
                         <UpdateProfileForm
                             :must-verify-email="mustVerifyEmail"
                             :status="status"
                         />
-                    </div>
-                </div>
+                    </SectionGridContent>
+                </SectionGrid>
 
-                <div class="grid grid-cols-1 gap-x-8 gap-y-8 pt-8 md:grid-cols-3">
-                    <div>
+                <SectionGrid>
+                    <SectionGridSidebar>
                         <Heading :size="5">Security Information</Heading>
                         <Paragraph color="muted" size="sm" class="mt-1">Information on how to access your account.</Paragraph>
-                    </div>
+                    </SectionGridSidebar>
 
-                    <div class="md:col-span-2">
+                    <SectionGridContent>
                         <UpdatePasswordForm />
-                    </div>
-                </div>
-            </div>
+                    </SectionGridContent>
+                </SectionGrid>
+            </SectionGridContainer>
         </Section>
     </Container>
 </template>

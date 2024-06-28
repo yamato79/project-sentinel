@@ -1,6 +1,6 @@
 <template>
     <span :class="containerClasses">
-        <svg :class="iconClasses" viewBox="0 0 6 6" aria-hidden="true">
+        <svg :class="iconClasses" viewBox="0 0 6 6" aria-hidden="true" v-if="icon">
             <circle cx="3" cy="3" r="3" />
         </svg>
         <slot></slot>
@@ -13,16 +13,21 @@ import { computed } from "vue";
 const props = defineProps({
     color: {
         type: String,
-        default: "default",
         required: false,
+        default: "default",
         validator: (value: string) => ["default", "muted", "primary", "secondary", "success", "warning", "danger"].includes(value)
     },
     size: {
         type: String,
-        default: "md",
         required: false,
+        default: "md",
         validator: (value: string) => ["sm", "md"].includes(value)
-    }
+    },
+    icon: {
+        type: Boolean,
+        required: false,
+        default: () => true,
+    },
 });
 
 const iconColors: { [key: string]: string } = {

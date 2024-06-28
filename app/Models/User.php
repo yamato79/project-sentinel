@@ -23,7 +23,7 @@ class User extends Authenticatable
      *
      * @var string
      */
-    protected $primaryKey = 'user_id';    
+    protected $primaryKey = 'user_id';
 
     /**
      * The attributes that are mass assignable.
@@ -57,5 +57,29 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the stacks that the website belongs to,
+     */
+    public function stacks()
+    {
+        return $this->belongsToMany(Stack::class, 'pivot_stacks_users', 'user_id', 'stack_id')
+            ->using(Pivot\StackUser::class)
+            ->withTimestamps()
+            ->withPivot([
+                'can_view',
+                'can_edit',
+                'joined_at',
+            ]);
+    }
+
+    /**
+     * Get the websites that belongs to the user.
+     */
+    public function websites()
+    {
+        return $this->hasMany(Website::class, 'created_by_user_id', 'user_id')
+            ->orderBy('name', 'asc');
     }
 }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Head } from "@inertiajs/vue3";
 import PanelLayout from "@/components/layouts/panel/index.vue";
-import BreadcrumbItem from "@/components/breadcrumb-item.vue";
 import Card from "@/components/card.vue";
 import Container from "@/components/container.vue";
 import ContentBody from "@/components/content-body.vue";
@@ -29,10 +28,6 @@ defineOptions({
                 <div class="hidden lg:block w-px h-6 bg-gray-200"></div>
                 <Paragraph color="muted" size="sm" class="hidden lg:block">Your most important information, at a glance.</Paragraph>
             </div>
-        </MountedTeleport>
-
-        <MountedTeleport to="#breadcrumbs">
-            <BreadcrumbItem :href="route('panel.dashboard')">Dashboard</BreadcrumbItem>
         </MountedTeleport>
 
         <Section>

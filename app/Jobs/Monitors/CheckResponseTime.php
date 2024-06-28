@@ -38,9 +38,9 @@ class CheckResponseTime implements ShouldQueue
         Http::get($this->website->address);
         $end = microtime(true);
 
-        return json_encode([
+        return [
             'response_time' => ($end - $start) * 1000,
-        ]);
+        ];
     }
 
     /**

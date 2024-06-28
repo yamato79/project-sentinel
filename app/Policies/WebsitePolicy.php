@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Website;
-use Illuminate\Auth\Access\Response;
 
 class WebsitePolicy
 {
@@ -21,7 +20,25 @@ class WebsitePolicy
      */
     public function view(User $user, Website $website): bool
     {
-        return true;
+        if ($website->created_by_user_id == $user->getKey()) {
+            return true;
+        }
+
+        if (
+            $website
+                ->stacks()
+                ->where('created_by_user_id', $user->getKey())
+                ->orWhereHas('users', function ($subQuery) use ($user) {
+                    $subQuery
+                        ->orWhere('pivot_stacks_users.user_id', $user->getKey())
+                        ->orWhere('pivot_stacks_users.can_view', true);
+                })
+                ->exists()
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -37,7 +54,25 @@ class WebsitePolicy
      */
     public function update(User $user, Website $website): bool
     {
-        return true;
+        if ($user->getKey() === $website->created_by_user_id) {
+            return true;
+        }
+
+        if (
+            $website
+                ->stacks()
+                ->where('created_by_user_id', $user->getKey())
+                ->orWhereHas('users', function ($subQuery) use ($user) {
+                    $subQuery
+                        ->where('pivot_stacks_users.user_id', $user->getKey())
+                        ->where('pivot_stacks_users.can_edit', true);
+                })
+                ->exists()
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -45,22 +80,6 @@ class WebsitePolicy
      */
     public function delete(User $user, Website $website): bool
     {
-        return true;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Website $website): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Website $website): bool
-    {
-        return false;
+        return $user->getKey() === $website->created_by_user_id;
     }
 }

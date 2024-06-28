@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head } from "@inertiajs/vue3";
 import PanelLayout from "@/components/layouts/panel/index.vue";
-import { router, useForm } from "@inertiajs/vue3";
+import { useForm } from "@inertiajs/vue3";
 import Button from "@/components/button.vue";
 import BreadcrumbItem from "@/components/breadcrumb-item.vue";
 import Card from "@/components/card.vue";
@@ -16,6 +16,10 @@ import Form from "@/components/form/form.vue";
 import Heading from "@/components/heading.vue";
 import MountedTeleport from "@/components/mounted-teleport.vue";
 import Paragraph from "@/components/paragraph.vue";
+import SectionGridContainer from "@/components/section-grid-container.vue";
+import SectionGridContent from "@/components/section-grid-content.vue";
+import SectionGridSidebar from "@/components/section-grid-sidebar.vue";
+import SectionGrid from "@/components/section-grid.vue";
 import Section from "@/components/section.vue";
 import Spinner from "@/components/spinner.vue";
 
@@ -29,7 +33,7 @@ const form = useForm({
 });
 
 const submitForm = () => {
-    form.post(route('panel.stacks.store'), {
+    form.post(route("panel.stacks.store"), {
         onSuccess: (response) => {
             console.log("TODO: Add success toast notification.", response);
             console.log("TODO: Add redirect to created stack.");
@@ -62,50 +66,52 @@ const submitForm = () => {
         </MountedTeleport>
 
         <Section>
-            <div class="space-y-10 divide-y-2 divide-gray-200 divide-dashed">
-                <div class="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-3">
-                    <div>
+            <SectionGridContainer>
+                <SectionGrid>
+                    <SectionGridSidebar>
                         <Heading :size="5">General Information</Heading>
                         <Paragraph color="muted" size="sm">Basic details about your stack.</Paragraph>
-                    </div>
+                    </SectionGridSidebar>
 
-                    <Card class="md:col-span-2">
-                        <Form @submit.prevent="submitForm">
-                            <ContentBody class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <FormGroup>
-                                    <FormLabel for="name" :required="true">Name</FormLabel>
-                                    <FormInput type="text" id="name" name="name" v-model="form.name" placeholder="Acme Websites" :disabled="form.processing" :required="true" />
-                                    <FormError v-if="form.errors.name">{{ form.errors.name }}</FormError>
-                                </FormGroup>
+                    <SectionGridContent>
+                        <Card>
+                            <Form @submit.prevent="submitForm">
+                                <ContentBody class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <FormGroup>
+                                        <FormLabel for="name" :required="true">Name</FormLabel>
+                                        <FormInput type="text" id="name" name="name" v-model="form.name" placeholder="Acme Websites" :disabled="form.processing" :required="true" />
+                                        <FormError v-if="form.errors.name">{{ form.errors.name }}</FormError>
+                                    </FormGroup>
 
-                                <FormGroup>
-                                    <FormLabel for="description" :required="true">Description</FormLabel>
-                                    <FormInput type="text" id="description" name="description" v-model="form.description" placeholder="Short description of your stack." :disabled="form.processing" :required="true" />
-                                    <FormError v-if="form.errors.description">{{ form.errors.description }}</FormError>
-                                </FormGroup>
-                            </ContentBody>
+                                    <FormGroup>
+                                        <FormLabel for="description" :required="true">Description</FormLabel>
+                                        <FormInput type="text" id="description" name="description" v-model="form.description" placeholder="Short description of your stack." :disabled="form.processing" :required="true" />
+                                        <FormError v-if="form.errors.description">{{ form.errors.description }}</FormError>
+                                    </FormGroup>
+                                </ContentBody>
 
-                            <ContentFoot>
-                                <Button :href="route('panel.stacks.index')" color="muted" :disabled="form.processing">
-                                    Cancel
-                                </Button>
+                                <ContentFoot>
+                                    <Button :href="route('panel.stacks.index')" color="muted" :disabled="form.processing">
+                                        Cancel
+                                    </Button>
 
-                                <Button type="submit" color="primary" :disabled="form.processing">
-                                    <template v-if="form.processing">
-                                        <Spinner color="white" size="sm"></Spinner>
-                                    </template>
+                                    <Button type="submit" color="primary" :disabled="form.processing">
+                                        <template v-if="form.processing">
+                                            <Spinner color="white" size="sm"></Spinner>
+                                        </template>
 
-                                    <template v-else>
-                                        <FontAwesomeIcon :icon="'fa-solid fa-plus'" :class="'text-gray-50'" aria-hidden="true" />
-                                    </template>
+                                        <template v-else>
+                                            <FontAwesomeIcon :icon="'fa-solid fa-plus'" :class="'text-gray-50'" />
+                                        </template>
 
-                                    Create Stack
-                                </Button>
-                            </ContentFoot>
-                        </Form>
-                    </Card>
-                </div>
-            </div>
+                                        Create Stack
+                                    </Button>
+                                </ContentFoot>
+                            </Form>
+                        </Card>
+                    </SectionGridContent>
+                </SectionGrid>
+            </SectionGridContainer>
         </Section>
     </Container>
 </template>

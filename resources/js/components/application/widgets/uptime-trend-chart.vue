@@ -2,16 +2,12 @@
 import { ref } from "vue";
 import ChartLine from "@/components/charts/chart-line.vue";
 
-const props = defineProps({
-    // ...
-});
-
 const chartOptions = ref({
     scales: {
         x: {
-            type: 'time',
+            type: "time",
             time: {
-                unit: 'hour'
+                unit: "hour"
             }
         },
         y: {

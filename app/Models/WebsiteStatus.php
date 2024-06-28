@@ -3,16 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use \App\Models\Traits\HasSlug;
+use Illuminate\Support\Str;
 
 class WebsiteStatus extends Model
 {
-    use HasSlug;
-
     const DEFAULT = 1;
-    const ONLINE  = 2;
+
+    const ONLINE = 2;
+
     const OFFLINE = 3;
-    const PAUSED  = 4;
+
+    const PAUSED = 4;
 
     /**
      * The table associated with the model.
@@ -46,6 +47,19 @@ class WebsiteStatus extends Model
     protected static function booted()
     {
         parent::booted();
-        static::bootHasSlug();
+
+        static::creating(function ($websiteStatus) {
+            if (empty($websiteStatus->slug)) {
+                $websiteStatus->slug = Str::slug($websiteStatus->name).'-'.strtolower(Str::random(12));
+            }
+        });
+    }
+
+    /**
+     * The websites that belong to the website status.
+     */
+    public function websites()
+    {
+        return $this->hasMany(Website::class, 'website_status_id', 'website_status_id');
     }
 }

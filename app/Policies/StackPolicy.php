@@ -4,24 +4,23 @@ namespace App\Policies;
 
 use App\Models\Stack;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class StackPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        return true;
-    }
-
     /**
      * Determine whether the user can view the model.
      */
     public function view(User $user, Stack $stack): bool
     {
-        return true;
+        if ($user->getKey() === $stack->created_by_user_id) {
+            return true;
+        }
+
+        if ($stack->users()->where('pivot_stacks_users.user_id', $user->getKey())->exists()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -37,7 +36,7 @@ class StackPolicy
      */
     public function update(User $user, Stack $stack): bool
     {
-        return true;
+        return $user->getKey() === $stack->created_by_user_id;
     }
 
     /**
@@ -45,22 +44,21 @@ class StackPolicy
      */
     public function delete(User $user, Stack $stack): bool
     {
-        return true;
+        return $user->getKey() === $stack->created_by_user_id;
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Stack $stack): bool
-    {
-        return true;
-    }
+    // editWebsites
+    // editMembers
+    // editSettings
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Stack $stack): bool
-    {
-        return true;
-    }
+    // addWebsite     // AttachWebsiteRequest
+    // removeWebsite  // DetachWebsiteRequest
+
+    // inviteUser     // AttachUserRequest
+    // removeUser     // RemoveUserRequest
+    // updateUser     // UpdateUserRequest
+
+    // leaveStack        // LeaveStackRequest
+    // acceptStackInvite // AcceptStackInvite
+    // rejectStackInvite // RejectStackInvite
 }

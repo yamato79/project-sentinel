@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use \App\Models\Traits\HasSlug;
+use Illuminate\Support\Str;
 
 class Stack extends Model
 {
     use HasFactory;
-    use HasSlug;
 
     /**
      * The table associated with the model.
@@ -43,13 +42,24 @@ class Stack extends Model
     protected static function booted()
     {
         parent::booted();
-        static::bootHasSlug();
 
-        static::creating(function ($model) {
-            if (!$model->created_by_user_id) {
-                $model->created_by_user_id = auth()->user()->getKey();
+        static::creating(function ($stack) {
+            if (empty($stack->created_by_user_id)) {
+                $stack->created_by_user_id = auth()->user()->getKey();
+            }
+
+            if (empty($stack->slug)) {
+                $stack->slug = Str::slug($stack->name).'-'.strtolower(Str::random(12));
             }
         });
+    }
+
+    /**
+     * Get the user that the stack belongs to.
+     */
+    public function createdByUser()
+    {
+        return $this->belongsTo(User::class, 'created_by_user_id', 'user_id');
     }
 
     /**
@@ -57,11 +67,13 @@ class Stack extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(User::class, 'pivot_stacks_users', 'user_id', 'stack_id')
+        return $this->belongsToMany(User::class, 'pivot_stacks_users', 'stack_id', 'user_id')
             ->using(Pivot\StackUser::class)
+            ->withTimestamps()
             ->withPivot([
                 'can_view',
                 'can_edit',
+                'joined_at',
             ]);
     }
 
@@ -70,7 +82,8 @@ class Stack extends Model
      */
     public function websites()
     {
-        return $this->belongsToMany(User::class, 'pivot_stacks_websites', 'website_id', 'stack_id')
+        return $this->belongsToMany(Website::class, 'pivot_stacks_websites', 'stack_id', 'website_id')
+            ->withTimestamps()
             ->using(Pivot\StackWebsite::class);
     }
 }

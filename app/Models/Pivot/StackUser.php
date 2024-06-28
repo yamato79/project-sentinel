@@ -12,7 +12,7 @@ class StackUser extends Pivot
      * @var bool
      */
     public $incrementing = true;
-    
+
     /**
      * The table associated with the model.
      *
@@ -26,4 +26,18 @@ class StackUser extends Pivot
      * @var string
      */
     protected $primaryKey = 'pivot_stacks_users_id';
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'can_view' => 'boolean',
+            'can_edit' => 'boolean',
+            'joined_at' => 'datetime',
+        ];
+    }
 }

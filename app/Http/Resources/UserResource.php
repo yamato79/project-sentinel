@@ -14,10 +14,20 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray([
+        $data = [
             'user_id' => $this->getKey(),
             'name' => $this->name,
             'email' => $this->email,
-        ]);
+        ];
+
+        if ($this->pivot) {
+            $data['pivot'] = [
+                'can_view' => $this->pivot->can_view,
+                'can_edit' => $this->pivot->can_edit,
+                'joined_at' => $this->pivot->joined_at,
+            ];
+        }
+
+        return $data;
     }
 }

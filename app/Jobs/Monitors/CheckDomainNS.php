@@ -39,9 +39,9 @@ class CheckDomainNS implements ShouldQueue
         // Use dig command to get nameservers
         exec("dig +short NS {$domain}", $nameservers);
 
-        return json_encode([
+        return [
             'nameservers' => $nameservers,
-        ]);
+        ];
     }
 
     /**

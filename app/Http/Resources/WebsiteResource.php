@@ -22,6 +22,7 @@ class WebsiteResource extends JsonResource
             'website_status_id' => $this->website_status_id,
             'website_status' => new WebsiteStatusResource($this->whenLoaded('websiteStatus')),
             'is_monitor_active' => $this->isMonitorActive,
+            'stacks' => StackResource::collection($this->whenLoaded('stacks')),
         ];
     }
 }

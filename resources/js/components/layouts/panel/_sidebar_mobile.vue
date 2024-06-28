@@ -67,8 +67,8 @@ const props = defineProps({
 });
 
 const onMenuItemClick = () => {
-    emit('toggleSidebar');
-}
+    emit("toggleSidebar");
+};
 
 const emit = defineEmits(["toggleSidebar"]);
 </script>

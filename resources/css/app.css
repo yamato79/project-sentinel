@@ -111,3 +111,7 @@ body {
 #app {
     width: 100%;
 }
+
+button svg.svg-inline--fa {
+    width: theme('spacing.4');
+}

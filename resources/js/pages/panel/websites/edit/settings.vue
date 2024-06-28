@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { Head, useForm } from "@inertiajs/vue3";
 import PanelLayout from "@/components/layouts/panel/index.vue";
-import Badge from "@/components/badge.vue"
-import BreadcrumbItem from "@/components/breadcrumb-item.vue";
+import WebsiteEditIndexLayout from "./index.vue";
+import Badge from "@/components/badge.vue";
 import Button from "@/components/button.vue";
 import Card from "@/components/card.vue";
-import Container from "@/components/container.vue";
 import ContentBody from "@/components/content-body.vue";
 import ContentFoot from "@/components/content-foot.vue";
 import FormError from "@/components/form/form-error.vue";
@@ -16,12 +15,16 @@ import FormToggle from "@/components/form/form-toggle.vue";
 import Form from "@/components/form/form.vue";
 import Heading from "@/components/heading.vue";
 import MountedTeleport from "@/components/mounted-teleport.vue";
-import Paragraph from '@/components/paragraph.vue';
-import Section from "@/components/section.vue";
+import Paragraph from "@/components/paragraph.vue";
+import SectionGridContainer from "@/components/section-grid-container.vue";
+import SectionGridContent from "@/components/section-grid-content.vue";
+import SectionGridSidebar from "@/components/section-grid-sidebar.vue";
+import SectionGrid from "@/components/section-grid.vue";
 import Spinner from "@/components/spinner.vue";
-import Tabs from "./_tabs.vue";
 
-const emit = defineEmits(["update-website"]);
+defineOptions({ 
+    layout: [PanelLayout, WebsiteEditIndexLayout],
+});
 
 const props = defineProps({
     website: {
@@ -29,10 +32,11 @@ const props = defineProps({
         required: false,
         default: () => {},
     },
-});
-
-defineOptions({ 
-    layout: PanelLayout,
+    tabs: {
+        type: Array,
+        required: false,
+        default: () => [],
+    },
 });
 
 const form = useForm({
@@ -80,107 +84,95 @@ const submitDeleteForm = () => {
 </script>
 
 <template>
-    <Container>
-        <Head title="Website Summary" />
+    <Head title="Website Summary" />
+    
+    <MountedTeleport to="#page-title">
+        <div class="flex flex-wrap items-center gap-4">
+            <Paragraph class="font-semibold">{{ props.website.data.name }}</Paragraph>
+            <div class="hidden lg:block w-px h-6 bg-gray-200"></div>
+            <Badge :color="props.website.data.website_status.color">{{ props.website.data.website_status.name }}</Badge>
+        </div>
+    </MountedTeleport>
+
+    <SectionGridContainer>
+        <SectionGrid>
+            <SectionGridSidebar>
+                <Heading :size="5">General Information</Heading>
+                <Paragraph color="muted" size="sm">Basic details about the website to be monitored.</Paragraph>
+            </SectionGridSidebar>
+
+            <SectionGridContent>
+                <Card>
+                    <Form @submit.prevent="submitForm">
+                        <ContentBody class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <FormGroup>
+                                <FormLabel for="name" :required="true">Name</FormLabel>
+                                <FormInput type="text" id="name" name="name" v-model="form.name" placeholder="Acme - Marketing Website" :disabled="form.processing || deleteForm.processing" :required="true" />
+                                <FormError v-if="form.errors.name">{{ form.errors.name }}</FormError>
+                            </FormGroup>
+
+                            <FormGroup>
+                                <FormLabel for="address" :required="true">Address</FormLabel>
+                                <FormInput type="text" id="address" name="address" v-model="form.address" placeholder="https://acme.com" :disabled="form.processing" :required="true" />
+                                <FormError v-if="form.errors.address">{{ form.errors.address }}</FormError>
+                            </FormGroup>
+
+                            <FormGroup class="col-span-full sm:col-span-1">
+                                <FormLabel for="is_active" :required="true">Monitor Active</FormLabel>
+                                <FormToggle id="is_active" name="is_active" v-model="form.is_monitor_active" :disabled="form.processing || deleteForm.processing">Turn the monitor on or off.</FormToggle>
+                                <FormError v-if="form.errors.is_monitor_active">{{ form.errors.is_monitor_active }}</FormError>
+                            </FormGroup>
+                        </ContentBody>
+
+                        <ContentFoot>
+                            <Button type="submit" color="primary" :disabled="form.processing || deleteForm.processing">
+                                <template v-if="form.processing">
+                                    <Spinner color="white" size="xs"></Spinner>
+                                </template>
+
+                                <template v-else>
+                                    <FontAwesomeIcon :icon="'fa-solid fa-save'" :class="'text-gray-50'" />
+                                </template>
+
+                                Save Changes
+                            </Button>
+                        </ContentFoot>
+                    </Form>
+                </Card>
+            </SectionGridContent>
+        </SectionGrid>
         
-        <MountedTeleport to="#page-title">
-            <div class="flex flex-wrap items-center gap-4">
-                <Paragraph class="font-semibold">{{ props.website.data.name }}</Paragraph>
-                <div class="hidden lg:block w-px h-6 bg-gray-200"></div>
-                <Badge :color="props.website.data.website_status.color">{{ props.website.data.website_status.name }}</Badge>
-            </div>
-        </MountedTeleport>
+        <SectionGrid>
+            <SectionGridSidebar>
+                <Heading :size="5">Delete Website</Heading>
+                <Paragraph color="muted" size="sm">Permanently remove this website and all its information.</Paragraph>
+            </SectionGridSidebar>
 
-        <MountedTeleport to="#breadcrumbs">
-            <BreadcrumbItem :href="route('panel.websites.index', { website: props.website.data.website_id })">Websites</BreadcrumbItem>
-            <BreadcrumbItem :href="route('panel.websites.edit', { website: props.website.data.website_id })">{{ props.website.data.name }}</BreadcrumbItem>
-            <BreadcrumbItem :href="route('panel.websites.edit.summary', { website: props.website.data.website_id })">Settings</BreadcrumbItem>
-        </MountedTeleport>
+            <SectionGridContent>
+                <Card>
+                    <Form @submit.prevent="submitDeleteForm">
+                        <ContentBody>
+                            <FormGroup>
+                                <FormLabel>Delete Website</FormLabel>
+                                <Paragraph class="italic" size="sm">
+                                    <span class="font-semibold">Warning:</span>
+                                    This is a permanent action, it cannot be undone. Please make sure you are sure you want to delete the website, "{{ form.name }}", before performing any actions.
+                                </Paragraph>
+                            </FormGroup>
+                        </ContentBody>
 
-        <Section>
-            <Tabs :website-id="props.website.data.website_id" />
+                        <ContentFoot>
+                            <Button type="submit" color="danger" :is-loading="deleteForm.processing" :disabled="form.processing || deleteForm.processing">
+                                <template #icon>
+                                    <FontAwesomeIcon icon="fa-solid fa-trash" />
+                                </template>
 
-            <div class="space-y-10 divide-y-2 divide-gray-200 divide-dashed">
-                <div class="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-3">
-                    <div>
-                        <Heading :size="5">General Information</Heading>
-                        <Paragraph color="muted" size="sm">Basic details about the website to be monitored.</Paragraph>
-                    </div>
-
-                    <Card class="md:col-span-2">
-                        <Form @submit.prevent="submitForm">
-                            <ContentBody class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <FormGroup>
-                                    <FormLabel for="name" :required="true">Name</FormLabel>
-                                    <FormInput type="text" id="name" name="name" v-model="form.name" placeholder="Acme - Marketing Website" :disabled="form.processing" :required="true" />
-                                    <FormError v-if="form.errors.name">{{ form.errors.name }}</FormError>
-                                </FormGroup>
-
-                                <FormGroup>
-                                    <FormLabel for="address" :required="true">Address</FormLabel>
-                                    <FormInput type="text" id="address" name="address" v-model="form.address" placeholder="https://acme.com" :disabled="form.processing" :required="true" />
-                                    <FormError v-if="form.errors.address">{{ form.errors.address }}</FormError>
-                                </FormGroup>
-
-                                <FormGroup class="col-span-full sm:col-span-1">
-                                    <FormLabel for="is_active" :required="true">Monitor Active</FormLabel>
-                                    <FormToggle id="is_active" name="is_active" v-model="form.is_monitor_active" :disabled="form.processing">Turn the monitor on or off.</FormToggle>
-                                    <FormError v-if="form.errors.is_monitor_active">{{ form.errors.is_monitor_active }}</FormError>
-                                </FormGroup>
-                            </ContentBody>
-
-                            <ContentFoot>
-                                <Button type="submit" color="primary" :disabled="form.processing">
-                                    <template v-if="form.processing">
-                                        <Spinner color="white" size="xs"></Spinner>
-                                    </template>
-
-                                    <template v-else>
-                                        <FontAwesomeIcon :icon="'fa-solid fa-save'" :class="'text-gray-50'" aria-hidden="true" />
-                                    </template>
-
-                                    Save Changes
-                                </Button>
-                            </ContentFoot>
-                        </Form>
-                    </Card>
-                </div>
-                
-                <div class="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-3 pt-10">
-                    <div>
-                        <Heading :size="5">Delete Website</Heading>
-                        <Paragraph color="muted" size="sm">Permanently remove this website and all its information.</Paragraph>
-                    </div>
-
-                    <Card class="md:col-span-2">
-                        <Form @submit.prevent="submitDeleteForm">
-                            <ContentBody class="grid grid-cols-1 gap-6">
-                                <FormGroup>
-                                    <FormLabel>Delete Website</FormLabel>
-                                    <Paragraph class="italic" size="sm">
-                                        <span class="font-semibold">Warning:</span>
-                                        This is a permanent action, it cannot be undone. Please make sure you are sure you want to delete the website, "{{ form.name }}", before performing any actions.
-                                    </Paragraph>
-                                </FormGroup>
-                            </ContentBody>
-
-                            <ContentFoot>
-                                <Button type="submit" color="danger" :disabled="form.processing">
-                                    <template v-if="deleteForm.processing">
-                                        <Spinner color="white" size="xs"></Spinner>
-                                    </template>
-
-                                    <template v-else>
-                                        <FontAwesomeIcon :icon="'fa-solid fa-trash'" aria-hidden="true" />
-                                    </template>
-
-                                    Delete Website
-                                </Button>
-                            </ContentFoot>
-                        </Form>
-                    </Card>
-                </div>
-            </div>
-        </Section>
-    </Container>
+                                Delete Website
+                            </Button>
+                        </ContentFoot>
+                    </Form>
+                </Card>
+            </SectionGridContent>
+        </SectionGrid>
+    </SectionGridContainer>
 </template>

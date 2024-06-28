@@ -11,18 +11,17 @@ import Heading from "@/components/heading.vue";
 import Paragraph from "@/components/paragraph.vue";
 import SectionGroup from "@/components/section-group.vue";
 import Section from "@/components/section.vue";
-import Spinner from "@/components/spinner.vue";
 
 defineOptions({ 
     layout: AuthLayout
 });
 
 const form = useForm({
-    email: '',
+    email: "",
 });
 
 const submitForm = () => {
-    form.post(route('password.email'));
+    form.post(route("password.email"));
 };
 </script>
 
@@ -45,11 +44,7 @@ const submitForm = () => {
             </FormGroup>
 
             <FormGroup class="pt-6">
-                <Button type="submit" :disabled="form.processing">
-                    <template v-if="form.processing">
-                        <Spinner color="white" size="sm"></Spinner>
-                    </template>
-
+                <Button type="submit" :is-loading="form.processing" :disabled="form.processing">
                     Send Instructions
                 </Button>
             </FormGroup>

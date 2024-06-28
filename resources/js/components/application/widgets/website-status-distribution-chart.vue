@@ -2,10 +2,6 @@
 import { ref } from "vue";
 import ChartDoughnut from "@/components/charts/chart-doughnut.vue";
 
-const props = defineProps({
-    // ...
-});
-
 const chartOptions = ref<any>({});
 
 const chartData = ref<any>({

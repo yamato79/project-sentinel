@@ -1,7 +1,8 @@
-import { Config } from 'ziggy-js';
+import { Config } from "ziggy-js";
 
 export interface User {
-    id: number;
+[x: string]: any;
+    user_id: number;
     name: string;
     email: string;
     email_verified_at: string;

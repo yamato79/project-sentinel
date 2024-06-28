@@ -3,7 +3,6 @@
 namespace Database\Seeders\Production;
 
 use App\Models\MonitorType;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class MonitorTypeSeeder extends Seeder

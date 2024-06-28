@@ -20,13 +20,13 @@ const passwordInput = ref<HTMLInputElement | null>(null);
 const currentPasswordInput = ref<HTMLInputElement | null>(null);
 
 const form = useForm({
-    current_password: '',
-    password: '',
-    password_confirmation: '',
+    current_password: "",
+    password: "",
+    password_confirmation: "",
 });
 
 const submitForm = () => {
-    form.put(route('password.update'), {
+    form.put(route("password.update"), {
         preserveScroll: true,
         onSuccess: () => {
             console.log("TODO: Add success toast notification.");
@@ -39,12 +39,12 @@ const submitForm = () => {
             });
 
             if (form.errors.password) {
-                form.reset('password', 'password_confirmation');
+                form.reset("password", "password_confirmation");
                 passwordInput.value?.focus();
             }
             
             if (form.errors.current_password) {
-                form.reset('current_password');
+                form.reset("current_password");
                 currentPasswordInput.value?.focus();
             }
         },
@@ -76,8 +76,11 @@ const submitForm = () => {
             </ContentBody>
 
             <ContentFoot>
-                <Button type="submit" color="primary" :disabled="form.processing">
-                    <FontAwesomeIcon :icon="'fa-solid fa-save'" :class="'text-gray-50'" aria-hidden="true" />
+                <Button type="submit" color="primary" :is-loading="form.processing" :disabled="form.processing">
+                    <template #icon>
+                        <FontAwesomeIcon icon="fa-solid fa-save" />
+                    </template>
+                    
                     Save Changes
                 </Button>
             </ContentFoot>

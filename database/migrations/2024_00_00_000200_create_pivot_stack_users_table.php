@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users', 'user_id')->onDelete('cascade')->index()->name('fk_pivot_stacks_users_user_id');
             $table->boolean('can_view')->default(true);
             $table->boolean('can_edit')->default(false);
+            $table->timestamp('joined_at')->nullable();
             $table->timestamps();
         });
 

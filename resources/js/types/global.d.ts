@@ -1,23 +1,23 @@
-import { PageProps as InertiaPageProps } from '@inertiajs/core';
-import { AxiosInstance } from 'axios';
-import { route as ziggyRoute } from 'ziggy-js';
-import { PageProps as AppPageProps } from './';
+import { PageProps as InertiaPageProps } from "@inertiajs/core";
+import { AxiosInstance } from "axios";
+import { route as ziggyRoute } from "ziggy-js";
+import { PageProps as AppPageProps } from "./";
 
 declare global {
     interface Window {
         axios: AxiosInstance;
     }
 
-    var route: typeof ziggyRoute;
+    const route: typeof ziggyRoute;
 }
 
-declare module 'vue' {
+declare module "vue" {
     interface ComponentCustomProperties {
         route: typeof ziggyRoute;
     }
 }
 
-declare module '@inertiajs/core' {
+declare module "@inertiajs/core" {
     interface PageProps extends InertiaPageProps, AppPageProps {}
 }
 
@@ -290,8 +290,8 @@ declare module "@headlessui/vue" {
     export const TransitionRoot: DefineComponent;
 }
 
-declare module 'vue-chartjs' {
-    import { Component } from 'vue';
+declare module "vue-chartjs" {
+    import { Component } from "vue";
     export class Bar extends Component {}
     export class Doughnut extends Component {}
     export class Line extends Component {}
@@ -301,6 +301,6 @@ declare module 'vue-chartjs' {
     export class Bubble extends Component {}
     export class Scatter extends Component {}
     export class mixins extends Component {
-      static reactiveProp: any;
+        static reactiveProp: any;
     }
   }

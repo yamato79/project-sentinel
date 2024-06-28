@@ -9,11 +9,9 @@ import FormInput from "@/components/form/form-input.vue";
 import FormLabel from "@/components/form/form-label.vue";
 import Form from "@/components/form/form.vue";
 import Heading from "@/components/heading.vue";
-import Link from "@/components/link.vue";
 import Paragraph from "@/components/paragraph.vue";
 import SectionGroup from "@/components/section-group.vue";
 import Section from "@/components/section.vue";
-import Spinner from "@/components/spinner.vue";
 
 defineOptions({ 
     layout: AuthLayout
@@ -24,14 +22,14 @@ const props = defineProps<{
 }>();
 
 const form = useForm({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
 });
 
-const verificationLinkSent = computed(() => props.status === 'verification-link-sent');
+const verificationLinkSent = computed(() => props.status === "verification-link-sent");
 
 const submitForm = () => {
-    form.post(route('verification.send'));
+    form.post(route("verification.send"));
 };
 </script>
 
@@ -65,11 +63,7 @@ const submitForm = () => {
             </FormGroup>
 
             <FormGroup class="pt-6">
-                <Button type="submit" :disabled="form.processing">
-                    <template v-if="form.processing">
-                        <Spinner color="white" size="sm"></Spinner>
-                    </template>
-
+                <Button type="submit" :is-loading="form.processing" :disabled="form.processing">
                     Resend Verification Email
                 </Button>
             </FormGroup>

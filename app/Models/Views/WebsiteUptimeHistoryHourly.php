@@ -2,16 +2,15 @@
 
 namespace App\Models\Views;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class WebsiteUptimeHistoryHourly extends Model
-{    
+{
     /**
-    * The table associated with the model.
-    *
-    * @var string
-    */
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'v_website_uptime_history_hourly';
 
     /**
@@ -22,11 +21,11 @@ class WebsiteUptimeHistoryHourly extends Model
         static::creating(function ($model) {
             return false;
         });
-    
+
         static::updating(function ($model) {
             return false;
         });
-    
+
         static::deleting(function ($model) {
             return false;
         });

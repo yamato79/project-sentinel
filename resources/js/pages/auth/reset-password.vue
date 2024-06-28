@@ -11,7 +11,6 @@ import Heading from "@/components/heading.vue";
 import Paragraph from "@/components/paragraph.vue";
 import SectionGroup from "@/components/section-group.vue";
 import Section from "@/components/section.vue";
-import Spinner from "@/components/spinner.vue";
 
 defineOptions({ 
     layout: AuthLayout
@@ -25,12 +24,12 @@ const props = defineProps<{
 const form = useForm({
     token: props.token,
     email: props.email,
-    password: '',
-    password_confirmation: '',
+    password: "",
+    password_confirmation: "",
 });
 
 const submitForm = () => {
-    form.post(route('password.store'));
+    form.post(route("password.store"));
 };
 </script>
 
@@ -65,11 +64,7 @@ const submitForm = () => {
             </FormGroup>
 
             <FormGroup class="pt-6">
-                <Button type="submit" :disabled="form.processing">
-                    <template v-if="form.processing">
-                        <Spinner color="white" size="sm"></Spinner>
-                    </template>
-
+                <Button type="submit" :is-loading="form.processing" :disabled="form.processing">
                     Reset Password
                 </Button>
             </FormGroup>

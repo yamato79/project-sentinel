@@ -24,7 +24,7 @@ Artisan::command('app:queue-batch-check-response-code', function () {
         ->whereNot('website_status_id', WebsiteStatus::PAUSED)
         ->cursor();
 
-    foreach($websites as $website) {
+    foreach ($websites as $website) {
         \App\Jobs\Monitors\CheckResponseCode::dispatch($website);
     }
 })->everyMinute();
@@ -37,7 +37,7 @@ Artisan::command('app:queue-batch-check-response-time', function () {
         ->whereNot('website_status_id', WebsiteStatus::PAUSED)
         ->cursor();
 
-    foreach($websites as $website) {
+    foreach ($websites as $website) {
         \App\Jobs\Monitors\CheckResponseTime::dispatch($website);
     }
 })->everyMinute();
@@ -50,7 +50,7 @@ Artisan::command('app:queue-batch-check-ssl-valid', function () {
         ->whereNot('website_status_id', WebsiteStatus::PAUSED)
         ->cursor();
 
-    foreach($websites as $website) {
+    foreach ($websites as $website) {
         \App\Jobs\Monitors\CheckSSLValid::dispatch($website);
     }
 })->daily();
@@ -63,7 +63,7 @@ Artisan::command('app:queue-batch-check-ssl-expiry', function () {
         ->whereNot('website_status_id', WebsiteStatus::PAUSED)
         ->cursor();
 
-    foreach($websites as $website) {
+    foreach ($websites as $website) {
         \App\Jobs\Monitors\CheckSSLExpiry::dispatch($website);
     }
 })->weekly();
@@ -76,7 +76,7 @@ Artisan::command('app:queue-batch-check-domain-expiry', function () {
         ->whereNot('website_status_id', WebsiteStatus::PAUSED)
         ->cursor();
 
-    foreach($websites as $website) {
+    foreach ($websites as $website) {
         \App\Jobs\Monitors\CheckDomainExpiry::dispatch($website);
     }
 })->daily();
@@ -89,7 +89,7 @@ Artisan::command('app:queue-batch-check-domain-ns', function () {
         ->whereNot('website_status_id', WebsiteStatus::PAUSED)
         ->cursor();
 
-    foreach($websites as $website) {
+    foreach ($websites as $website) {
         \App\Jobs\Monitors\CheckDomainNS::dispatch($website);
     }
 })->daily();

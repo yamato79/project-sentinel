@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\Website;
 
-use App\Models\Website;
 use App\Models\WebsiteStatus;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
 
 class UpdateWebsiteRequest extends FormRequest
 {
@@ -14,7 +13,7 @@ class UpdateWebsiteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('update', $this->route('website'));
     }
 
     /**
@@ -30,7 +29,6 @@ class UpdateWebsiteRequest extends FormRequest
         }
 
         $this->merge([
-            'slug' => Str::slug($this->name) . "-" . Str::random(6),
             'website_status_id' => $websiteStatusId,
         ]);
     }
@@ -46,7 +44,6 @@ class UpdateWebsiteRequest extends FormRequest
 
         return [
             'name' => 'required|string|min:1|max:255',
-            'slug' => "required|string|min:1|max:255|unique:websites,slug,{$website->getKey()},website_id",
             'address' => 'required|url:http,https|min:1|max:255',
             'website_status_id' => 'required|integer|exists:website_statuses,website_status_id',
         ];

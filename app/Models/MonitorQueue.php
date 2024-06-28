@@ -28,6 +28,35 @@ class MonitorQueue extends Model
     protected $fillable = [
         'monitor_type_id',
         'website_id',
-        'raw_data'
+        'raw_data',
+        'created_at',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'raw_data' => 'array',
+        ];
+    }
+
+    /**
+     * The monitor type that the monitor queue belongs to.
+     */
+    public function monitorType()
+    {
+        return $this->belongsTo(MonitorType::class, 'monitor_type_id', 'monitor_type_id');
+    }
+
+    /**
+     * The website that the monitor queue belongs to.
+     */
+    public function website()
+    {
+        return $this->belongsTo(Website::class, 'website_id', 'website_id');
+    }
 }

@@ -32,5 +32,5 @@ const isActive = computed(() => {
     return (currentUrl.pathname === linkUrl.pathname);
 });
 
-const linkClasses = (isActive: boolean) => [isActive ? "text-gray-900 bg-white" : "text-gray-500 hover:text-gray-700 bg-white", "max-w-[25%] group relative min-w-0 flex-1 overflow-hidden px-4 py-4 text-center text-sm font-medium focus:z-10 font-medium whitespace-nowrap transition-all ease-in-out duration-300"];
+const linkClasses = (isActive: boolean) => [isActive ? "text-gray-900 bg-white" : "text-gray-500 hover:text-gray-700 bg-white", "max-w-[20%] group relative min-w-0 flex-1 overflow-hidden px-4 py-2.5 text-center text-sm font-medium focus:z-10 font-medium whitespace-nowrap transition-all ease-in-out duration-300"];
 </script>

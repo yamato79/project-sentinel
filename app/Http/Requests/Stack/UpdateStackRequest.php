@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Stack;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
 
 class UpdateStackRequest extends FormRequest
 {
@@ -12,27 +12,7 @@ class UpdateStackRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
-    }
-
-    /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation(): void
-    {
-        $stack = $this->route('stack');
-
-        if ($stack->name != $this->name) {
-            $this->merge([
-                'slug' => Str::slug($this->name) . "-" . Str::random(6),
-            ]);
-
-            return;
-        }
-
-        $this->merge([
-            'slug' => $stack->slug,
-        ]);
+        return Gate::allows('update', $this->route('stack'));
     }
 
     /**
@@ -46,7 +26,6 @@ class UpdateStackRequest extends FormRequest
 
         return [
             'name' => 'required|string|min:1|max:255',
-            'slug' => "required|string|min:1|max:255|unique:stacks,slug,{$stack->getKey()},stack_id",
             'description' => 'required|string|min:1|max:255',
         ];
     }

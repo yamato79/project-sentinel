@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Website;
-use App\Http\Resources\WebsiteResource;
 use App\Http\Requests\Website\CreateWebsiteRequest;
+use App\Http\Requests\Website\DeleteWebsiteRequest;
 use App\Http\Requests\Website\UpdateWebsiteRequest;
+use App\Http\Resources\WebsiteResource;
+use App\Models\Website;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -17,18 +18,31 @@ class WebsiteController extends Controller
      */
     public function index(Request $request)
     {
-        Gate::authorize('viewAny', new Website());
+        $currentUser = auth()->user();
 
         $websites = Website::query()
-            ->with(['websiteStatus'])
+            ->with(['websiteStatus', 'stacks'])
             ->when($request->filled('searchQuery'), function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->get('searchQuery') . '%');
+                $query->where('name', 'like', '%'.$request->get('searchQuery').'%');
+            })
+            ->where('created_by_user_id', $currentUser->getKey())
+            ->orWhereHas('stacks', function ($subQuery) use ($currentUser) {
+                $subQuery
+                    ->where('stacks.created_by_user_id', $currentUser->getKey())
+                    ->orWhereHas('users', function ($altQuery) use ($currentUser) {
+                        $altQuery
+                            ->where('pivot_stacks_users.user_id', $currentUser->getKey())
+                            ->whereNotNull('pivot_stacks_users.joined_at');
+                    });
             })
             ->paginate(15)
             ->withQueryString();
 
         return Inertia::render('panel/websites/browse', [
             'websites' => WebsiteResource::collection($websites),
+            'breadcrumbs' => [
+                ['label' => 'Websites', 'href' => route('panel.websites.index')],
+            ],
         ]);
     }
 
@@ -37,10 +51,13 @@ class WebsiteController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create', new Website);
+        Gate::authorize('create', new Website());
 
         return Inertia::render('panel/websites/create', [
-            // ...
+            'breadcrumbs' => [
+                ['label' => 'Websites', 'href' => route('panel.websites.index')],
+                ['label' => 'Create', 'href' => route('panel.websites.create')],
+            ],
         ]);
     }
 
@@ -49,51 +66,14 @@ class WebsiteController extends Controller
      */
     public function store(CreateWebsiteRequest $request)
     {
-        Gate::authorize('create', $website);
-
-        $payload = Website::create($request->safe()->only([
+        $website = Website::create($request->safe()->only([
             'name',
-            'slug',
             'address',
             'website_status_id',
         ]));
 
-        $website = Website::create($payload);
-
         return redirect()->route('panel.websites.edit.summary', [
             'website' => $website,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function editSummary(Request $request, Website $website)
-    {
-        Gate::authorize('view', $website);
-
-        $website->load([
-            'websiteStatus',
-        ]);
-
-        return Inertia::render('panel/websites/edit/summary', [
-            'website' => new WebsiteResource($website),
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function editSettings(Request $request, Website $website)
-    {
-        Gate::authorize('view', $website);
-
-        $website->load([
-            'websiteStatus',
-        ]);
-
-        return Inertia::render('panel/websites/edit/settings', [
-            'website' => new WebsiteResource($website),
         ]);
     }
 
@@ -102,11 +82,8 @@ class WebsiteController extends Controller
      */
     public function update(UpdateWebsiteRequest $request, Website $website)
     {
-        Gate::authorize('update', $website);
-
         $website->update($request->safe()->only([
             'name',
-            'slug',
             'address',
             'website_status_id',
         ]));
@@ -119,12 +96,81 @@ class WebsiteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Website $website)
+    public function destroy(DeleteWebsiteRequest $request, Website $website)
     {
-        Gate::authorize('delete', $website);
-
         $website->delete();
 
         return redirect()->route('panel.websites.index');
+    }
+
+    /**
+     * Get the tabs available for the user.
+     */
+    public function getEditTabs(Website $website)
+    {
+        $tabs = [
+            [
+                'label' => 'Summary',
+                'href' => route('panel.websites.edit.summary', [
+                    'website' => $website,
+                ]),
+            ],
+        ];
+
+        if (Gate::check('update', $website)) {
+            $tabs[] = [
+                'label' => 'Settings',
+                'href' => route('panel.websites.edit.settings', [
+                    'website' => $website,
+                ]),
+            ];
+        }
+
+        return $tabs;
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function getSummaryPage(Request $request, Website $website)
+    {
+        Gate::authorize('view', $website);
+
+        $website->load([
+            'websiteStatus',
+        ]);
+
+        return Inertia::render('panel/websites/edit/summary', [
+            'website' => new WebsiteResource($website),
+            'tabs' => $this->getEditTabs($website),
+            'breadcrumbs' => [
+                ['label' => 'Websites', 'href' => route('panel.websites.index')],
+                ['label' => $website->name, 'href' => route('panel.websites.edit', ['website' => $website])],
+                ['label' => 'Summary', 'href' => route('panel.websites.edit.summary', ['website' => $website])],
+            ],
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function getSettingsPage(Request $request, Website $website)
+    {
+        Gate::authorize('view', $website);
+        Gate::authorize('update', $website);
+
+        $website->load([
+            'websiteStatus',
+        ]);
+
+        return Inertia::render('panel/websites/edit/settings', [
+            'website' => new WebsiteResource($website),
+            'tabs' => $this->getEditTabs($website),
+            'breadcrumbs' => [
+                ['label' => 'Websites', 'href' => route('panel.websites.index')],
+                ['label' => $website->name, 'href' => route('panel.websites.edit', ['website' => $website])],
+                ['label' => 'Settings', 'href' => route('panel.websites.edit.settings', ['website' => $website])],
+            ],
+        ]);
     }
 }

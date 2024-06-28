@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Website;
 use App\Models\WebsiteStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { Head } from "@inertiajs/vue3";
 import PanelLayout from "@/components/layouts/panel/index.vue";
-import AppModelTable from '@/components/application/app-model-table.vue';
+import AppModelTable from "@/components/application/app-model-table.vue";
 import Badge from "@/components/badge.vue";
-import Button from '@/components/button.vue';
-import BreadcrumbItem from "@/components/breadcrumb-item.vue";
+import Button from "@/components/button.vue";
 import Container from "@/components/container.vue";
 import Link from "@/components/link.vue";
 import MountedTeleport from "@/components/mounted-teleport.vue";
 import Paragraph from "@/components/paragraph.vue";
 import Section from "@/components/section.vue";
+
+defineOptions({ 
+    layout: PanelLayout,
+});
 
 const props = defineProps({
     websites: {
@@ -18,18 +21,15 @@ const props = defineProps({
     },
 });
 
-defineOptions({ 
-    layout: PanelLayout,
-});
-
 const modelTable = {
     /**
      * Table Columns
      */
     columns: [
-        { key: 'name', title: 'Name', align: 'left'},
-        { key: 'website_statuses', title: 'Status', align: 'left'},
-        { key: 'actions', title: 'Actions', align: 'right', fullWidth: true },
+        { key: "name", title: "Name", align: "left"},
+        { key: "website_statuses", title: "Status", align: "left"},
+        { key: "stacks", title: "Stacks", align: "left"},
+        { key: "actions", title: "Actions", align: "right", fullWidth: true },
     ],
 
     /**
@@ -61,15 +61,11 @@ const modelTable = {
             </div>
         </MountedTeleport>
 
-        <MountedTeleport to="#breadcrumbs">
-            <BreadcrumbItem :href="route('panel.websites.index')"> Websites </BreadcrumbItem>
-        </MountedTeleport>
-
         <Section>
             <AppModelTable :columns="modelTable.columns" :rows="modelTable.rows" :meta="modelTable.meta" :links="modelTable.links">
                 <template #actions>
                     <Button :href="route('panel.websites.create')" color="primary">
-                        <FontAwesomeIcon :icon="'fa-solid fa-plus'" :class="'text-gray-50'" aria-hidden="true" />
+                        <FontAwesomeIcon :icon="'fa-solid fa-plus'" :class="'text-gray-50'" />
                         New Website
                     </Button>
                 </template>
@@ -89,6 +85,18 @@ const modelTable = {
                         <Badge :color="website.website_status.color">
                             {{  website.website_status.name }}
                         </Badge>
+                    </div>
+                </template>
+
+                <template #column_stacks="{ row: website }">
+                    <div class="flex items-center justify-center gap-2">
+                        <template v-for="(stack, stackIndex) in website.stacks" :key="'stack_' + stackIndex">
+                            <div class="whitespace-nowrap">
+                                <Badge color="muted" :icon="false">
+                                    {{ stack.name }}
+                                </Badge>
+                            </div>
+                        </template>
                     </div>
                 </template>
 

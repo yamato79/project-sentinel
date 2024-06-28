@@ -24,7 +24,7 @@ const form = useForm({
 });
 
 const submitForm = () => {
-    form.patch(route('panel.profile.update'), {
+    form.patch(route("panel.profile.update"), {
         onSuccess: () => {
             console.log("TODO: Add success toast notification.");
         },
@@ -56,8 +56,11 @@ const submitForm = () => {
             </ContentBody>
 
             <ContentFoot>
-                <Button type="submit" color="primary" :disabled="form.processing">
-                    <FontAwesomeIcon :icon="'fa-solid fa-save'" :class="'text-gray-50'" aria-hidden="true" />
+                <Button type="submit" color="primary" :is-loading="form.processing" :disabled="form.processing">
+                    <template #icon>
+                        <FontAwesomeIcon icon="fa-solid fa-save" />
+                    </template>
+                    
                     Save Changes
                 </Button>
             </ContentFoot>

@@ -42,7 +42,7 @@ class CheckResponseCode implements ShouldQueue
         /**
          * If the website is offline AND the website status is not offline or paused.
          */
-        if (!$isOnline && !in_array($this->website->website_status_id, [WebsiteStatus::OFFLINE, WebsiteStatus::PAUSED])) {
+        if (! $isOnline && ! in_array($this->website->website_status_id, [WebsiteStatus::OFFLINE, WebsiteStatus::PAUSED])) {
             $this->website->update([
                 'website_status_id' => WebsiteStatus::OFFLINE,
             ]);
@@ -51,15 +51,15 @@ class CheckResponseCode implements ShouldQueue
         /**
          * If the website is online AND the website status is not online or paused.
          */
-        if ($isOnline && !in_array($this->website->website_status_id, [WebsiteStatus::ONLINE, WebsiteStatus::PAUSED])) {
+        if ($isOnline && ! in_array($this->website->website_status_id, [WebsiteStatus::ONLINE, WebsiteStatus::PAUSED])) {
             $this->website->update([
                 'website_status_id' => WebsiteStatus::ONLINE,
             ]);
         }
 
-        return json_encode([
+        return [
             'response_code' => $responseStatus,
-        ]);
+        ];
     }
 
     /**
