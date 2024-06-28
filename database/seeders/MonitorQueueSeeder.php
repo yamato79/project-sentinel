@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Website;
-use App\Models\MonitorType;
 use App\Models\MonitorQueue;
-use Illuminate\Database\Seeder;
+use App\Models\MonitorType;
+use App\Models\Website;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class MonitorQueueSeeder extends Seeder
 {
@@ -43,7 +43,7 @@ class MonitorQueueSeeder extends Seeder
         }
 
         // Insert any remaining entries
-        if (!empty($entries)) {
+        if (! empty($entries)) {
             MonitorQueue::insert($entries);
         }
     }
