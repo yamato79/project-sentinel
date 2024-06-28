@@ -30,7 +30,7 @@ const modelTable = {
         { key: "website_statuses", title: "Status", align: "left"},
         { key: "stacks", title: "Stacks", align: "left"},
         { key: "actions", title: "Actions", align: "right", fullWidth: true },
-    ],
+    ] as ModelTableColumn[],
 
     /**
      * Table Rows

@@ -21,7 +21,7 @@ const props = defineProps({
     }
 });
 
-const parsedChartData = ref({
+const parsedChartData = ref<any>({
     ...props.chartData
 });
 

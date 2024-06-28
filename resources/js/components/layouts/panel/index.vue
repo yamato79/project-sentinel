@@ -31,7 +31,7 @@
 
                                 <div class="hidden sm:block w-px h-6 bg-gray-200"></div>
 
-                                <Link :href="route('logout')" method="POST" as="button" class="group flex items-center gap-2 font-medium leading-6 text-sm text-gray-500 hover:text-gray-700 transition-all ease-in-out duration-300">
+                                <Link :href="route('logout')" method="post" as="button" class="group flex items-center gap-2 font-medium leading-6 text-sm text-gray-500 hover:text-gray-700 transition-all ease-in-out duration-300">
                                     <FontAwesomeIcon :icon="'fa-solid fa-sign-out-alt'" aria-hidden="true" />
                                     Logout
                                 </Link>

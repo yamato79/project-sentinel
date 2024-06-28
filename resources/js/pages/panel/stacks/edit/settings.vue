@@ -182,7 +182,7 @@ const submitLeaveForm = () => {
                             </ContentBody>
 
                             <ContentFoot>
-                                <Button type="submit" color="default" is-loading="leaveForm.processing" :disabled="formsProcessing">
+                                <Button type="submit" color="default" :is-loading="leaveForm.processing" :disabled="formsProcessing">
                                     <template #icon>
                                         <FontAwesomeIcon icon="fa-solid fa-trash" />
                                     </template>

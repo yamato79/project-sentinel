@@ -32,7 +32,7 @@ const modelTable = {
         { key: "websites_count",  title: "# of Websites", align: "right", fullWidth: true},
         { key: "users_count",     title: "# of Members",  align: "right", fullWidth: true},
         { key: "actions",         title: "Actions",       align: "right", fullWidth: true },
-    ],
+    ] as ModelTableColumn[],
 
     /**
      * Table Rows
