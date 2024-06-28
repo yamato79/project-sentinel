@@ -1,4 +1,3 @@
-import "./bootstrap";
 import "../css/app.css";
 
 import { createSSRApp, h, DefineComponent } from "vue";
