@@ -1,3 +1,32 @@
+<script setup lang="ts">
+import { Link } from "@inertiajs/vue3";
+import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from "@headlessui/vue";
+import { XMarkIcon } from "@heroicons/vue/24/outline";
+import MenuHorizontal from "@/components/menu-horizontal.vue";
+import MenuHorizontalItem from "@/components/menu-horizontal-item.vue";
+
+const emit = defineEmits(["toggleSidebar"]);
+
+const props = defineProps({
+    sidebarOpen: {
+        type: Boolean,
+        required: true
+    }
+});
+
+const navigation = [
+    { name: "Dashboard", href: route("panel.dashboard"), icon: "fa-solid fa-display" },
+    { name: "Stacks",    href: route("panel.stacks.index"),  icon: "fa-solid fa-layer-group" },
+    { name: "Websites", href: route("panel.websites.index"), icon: "fa-solid fa-globe" },
+    { name: "My Profile", href: route("panel.profile.edit"), icon: "fa-solid fa-user-gear" },
+    { name: "Sign out", href: route("logout"), icon: "fa-solid fa-right-from-bracket" }
+];
+
+const onMenuItemClick = () => {
+    emit("toggleSidebar");
+};
+</script>
+
 <template>
     <TransitionRoot as="template" :show="props.sidebarOpen">
         <Dialog class="relative z-50 lg:hidden" @close="emit('toggleSidebar')">
@@ -43,32 +72,3 @@
         </Dialog>
     </TransitionRoot>
 </template>
-
-<script setup lang="ts">
-import { Link } from "@inertiajs/vue3";
-import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from "@headlessui/vue";
-import { XMarkIcon } from "@heroicons/vue/24/outline";
-import MenuHorizontal from "@/components/menu-horizontal.vue";
-import MenuHorizontalItem from "@/components/menu-horizontal-item.vue";
-
-const navigation = [
-    { name: "Dashboard", href: route("panel.dashboard"), icon: "fa-solid fa-display" },
-    { name: "Stacks",    href: route("panel.stacks.index"),  icon: "fa-solid fa-layer-group" },
-    { name: "Websites", href: route("panel.websites.index"), icon: "fa-solid fa-globe" },
-    { name: "My Profile", href: route("panel.profile.edit"), icon: "fa-solid fa-user-gear" },
-    { name: "Sign out", href: route("logout"), icon: "fa-solid fa-right-from-bracket" }
-];
-
-const props = defineProps({
-    sidebarOpen: {
-        type: Boolean,
-        required: true
-    }
-});
-
-const onMenuItemClick = () => {
-    emit("toggleSidebar");
-};
-
-const emit = defineEmits(["toggleSidebar"]);
-</script>

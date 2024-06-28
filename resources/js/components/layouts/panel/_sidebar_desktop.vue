@@ -1,3 +1,15 @@
+<script setup lang="ts">
+import { Link } from "@inertiajs/vue3";
+import MenuHorizontal from "@/components/menu-horizontal.vue";
+import MenuHorizontalItem from "@/components/menu-horizontal-item.vue";
+
+const navigation = [
+    { name: "Dashboard", href: route("panel.dashboard"),      icon: "fa-solid fa-display" },
+    { name: "Stacks",    href: route("panel.stacks.index"),  icon: "fa-solid fa-layer-group" },
+    { name: "Websites",  href: route("panel.websites.index"), icon: "fa-solid fa-globe" },
+];
+</script>
+
 <template>
     <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
         <!-- Sidebar component, swap this element with another sidebar if you like -->
@@ -22,15 +34,3 @@
         </div>
     </div>
 </template>
-
-<script setup lang="ts">
-import { Link } from "@inertiajs/vue3";
-import MenuHorizontal from "@/components/menu-horizontal.vue";
-import MenuHorizontalItem from "@/components/menu-horizontal-item.vue";
-
-const navigation = [
-    { name: "Dashboard", href: route("panel.dashboard"),      icon: "fa-solid fa-display" },
-    { name: "Stacks",    href: route("panel.stacks.index"),  icon: "fa-solid fa-layer-group" },
-    { name: "Websites",  href: route("panel.websites.index"), icon: "fa-solid fa-globe" },
-];
-</script>
