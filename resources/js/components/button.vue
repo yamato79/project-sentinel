@@ -70,7 +70,9 @@ const classes = computed(() => `${baseClasses} ${colors[props.color]} ${sizes[pr
                     </template>
 
                     <template v-else>
-                        <slot name="icon"></slot>
+                        <div>
+                            <slot name="icon"></slot>
+                        </div>
                     </template>
 
                     <slot></slot>
@@ -85,7 +87,9 @@ const classes = computed(() => `${baseClasses} ${colors[props.color]} ${sizes[pr
                 </template>
 
                 <template v-else>
-                    <slot name="icon"></slot>
+                    <div>
+                        <slot name="icon"></slot>
+                    </div>
                 </template>
 
                 <slot></slot>
