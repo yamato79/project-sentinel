@@ -34,13 +34,20 @@ class CheckResponseTime implements ShouldQueue
      */
     public function executeMonitor()
     {
+        $responseTime = null;
         $start = microtime(true);
-        Http::get($this->website->address);
-        $end = microtime(true);
+
+        try {
+            Http::timeout(15)->get($this->website->address);
+            $end = microtime(true);
+            $responseTime = ($end - $start) * 1000; // Response time in milliseconds
+        } catch (\Exception $e) {
+            // ...
+        }
 
         return [
             'app_location' => config('app.location'),
-            'response_time' => ($end - $start) * 1000,
+            'response_time' => $responseTime,
         ];
     }
 

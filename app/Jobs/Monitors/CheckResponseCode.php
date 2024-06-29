@@ -35,8 +35,15 @@ class CheckResponseCode implements ShouldQueue
      */
     public function executeMonitor()
     {
-        $response = Http::timeout(15)->get($this->website->address);
-        $responseStatus = $response->status();
+        $responseStatus = 504;
+
+        try {
+            $response = Http::timeout(15)->get($this->website->address);
+            $responseStatus = $response->status();
+        } catch (\Exception $e) {
+            // ...
+        }
+
         $isOnline = ($responseStatus >= 200 && $responseStatus <= 299);
 
         /**
