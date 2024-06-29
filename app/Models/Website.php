@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -61,6 +62,31 @@ class Website extends Model
             \App\Jobs\Monitors\CheckSSLExpiry::dispatch($website);
             \App\Jobs\Monitors\CheckDomainExpiry::dispatch($website);
             \App\Jobs\Monitors\CheckDomainNS::dispatch($website);
+        });
+    }
+
+    /**
+     * The 'availableToUser' query scope.
+     */
+    public function scopeAvailableToUser(Builder $query, User $user)
+    {
+        return $query
+            ->where(function ($groupedQuery) use ($user) {
+                $groupedQuery
+                    // The user created the website.
+                    ->where('created_by_user_id', $user->getKey())
+                    ->orWhereHas('stacks', function ($subQuery) use ($user) {
+                        $subQuery
+                            // The website is in a stack created by the user.
+                            ->where('stacks.created_by_user_id', $user->getKey())
+
+                            // The website is in a stack that the user is a member of.
+                            ->orWhereHas('users', function ($altQuery) use ($user) {
+                                $altQuery
+                                    ->where('pivot_stacks_users.user_id', $user->getKey())
+                                    ->whereNotNull('pivot_stacks_users.joined_at');
+                            });
+            });
         });
     }
 

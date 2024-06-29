@@ -7,6 +7,7 @@ use App\Http\Requests\Website\DeleteWebsiteRequest;
 use App\Http\Requests\Website\UpdateWebsiteRequest;
 use App\Http\Resources\WebsiteResource;
 use App\Models\Website;
+use App\Services\UptimeService\UptimeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -18,23 +19,12 @@ class WebsiteController extends Controller
      */
     public function index(Request $request)
     {
-        $currentUser = auth()->user();
-
         $websites = Website::query()
             ->with(['websiteStatus', 'stacks'])
             ->when($request->filled('searchQuery'), function ($query) use ($request) {
                 $query->where('name', 'like', '%'.$request->get('searchQuery').'%');
             })
-            ->where('created_by_user_id', $currentUser->getKey())
-            ->orWhereHas('stacks', function ($subQuery) use ($currentUser) {
-                $subQuery
-                    ->where('stacks.created_by_user_id', $currentUser->getKey())
-                    ->orWhereHas('users', function ($altQuery) use ($currentUser) {
-                        $altQuery
-                            ->where('pivot_stacks_users.user_id', $currentUser->getKey())
-                            ->whereNotNull('pivot_stacks_users.joined_at');
-                    });
-            })
+            ->availableToUser(auth()->user())
             ->paginate(15)
             ->withQueryString();
 
@@ -142,6 +132,12 @@ class WebsiteController extends Controller
 
         return Inertia::render('panel/websites/edit/summary', [
             'website' => new WebsiteResource($website),
+            'uptimeCards' => UptimeService::getUptimeCards([
+                24 => "Uptime (24H)",
+                168 => "Uptime (7D)",
+                720 => "Uptime (30D)"
+            ], $website->getKey()),
+            'uptimeTrend' => UptimeService::getUptimeTrendChartData(24, $website->getKey()),
             'tabs' => $this->getEditTabs($website),
             'breadcrumbs' => [
                 ['label' => 'Websites', 'href' => route('panel.websites.index')],

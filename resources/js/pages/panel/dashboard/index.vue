@@ -16,6 +16,24 @@ import WebsiteStatusDistributionChart from "@/components/application/widgets/web
 defineOptions({ 
     layout: PanelLayout,
 });
+
+const props = defineProps({
+    uptimeCards: {
+        type: Object,
+        required: false,
+        default: () => {},
+    },
+    uptimeTrend: {
+        type: Object,
+        required: false,
+        default: () => {},
+    },
+    websiteStatusDistribution: {
+        type: Object,
+        required: false,
+        default: () => {},
+    },
+});
 </script>
 
 <template>
@@ -35,9 +53,16 @@ defineOptions({
                 <Heading :size="4">Uptime Summary</Heading>
 
                 <dl class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    <UptimeCard :title="'Uptime (24H)'" />
-                    <UptimeCard :title="'Uptime (7D)'" />
-                    <UptimeCard :title="'Uptime (30D)'" />
+                    <template v-for="(uptimeCard, uptimeCardIndex) in props.uptimeCards" :key="'uptimeCard_' + uptimeCardIndex">
+                        <UptimeCard
+                            :title="uptimeCard.title"
+                            :currentValue="uptimeCard.currentValue"
+                            :previousValue="uptimeCard.previousValue"
+                            :valueIncrease="uptimeCard.valueIncrease"
+                            :valueDecrease="uptimeCard.valueDecrease"
+                            :color="uptimeCard.color"
+                        />
+                    </template>
                 </dl>
             </SectionGroup>
 
@@ -47,7 +72,7 @@ defineOptions({
 
                     <Card>
                         <ContentBody class="h-96">
-                            <UptimeTrendChart />
+                            <UptimeTrendChart :chart-data="props.uptimeTrend" />
                         </ContentBody>
                     </Card>
                 </SectionGroup>
@@ -57,7 +82,7 @@ defineOptions({
 
                     <Card>
                         <ContentBody class="h-96">
-                            <WebsiteStatusDistributionChart />
+                            <WebsiteStatusDistributionChart :chart-data="props.websiteStatusDistribution" />
                         </ContentBody>
                     </Card>
                 </SectionGroup>

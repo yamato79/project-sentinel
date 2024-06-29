@@ -29,6 +29,16 @@ const props = defineProps({
         required: false,
         default: () => [],
     },
+    uptimeCards: {
+        type: Object,
+        required: false,
+        default: () => {},
+    },
+    uptimeTrend: {
+        type: Object,
+        required: false,
+        default: () => {},
+    },
 });
 </script>
 
@@ -51,9 +61,16 @@ const props = defineProps({
                         <Heading :size="4">Uptime Summary</Heading>
 
                         <dl class="grid grid-cols-1 gap-6">
-                            <UptimeCard :title="'Uptime (24H)'" />
-                            <UptimeCard :title="'Uptime (7D)'" />
-                            <UptimeCard :title="'Uptime (30D)'" />
+                            <template v-for="(uptimeCard, uptimeCardIndex) in props.uptimeCards" :key="'uptimeCard_' + uptimeCardIndex">
+                                <UptimeCard
+                                    :title="uptimeCard.title"
+                                    :currentValue="uptimeCard.currentValue"
+                                    :previousValue="uptimeCard.previousValue"
+                                    :valueIncrease="uptimeCard.valueIncrease"
+                                    :valueDecrease="uptimeCard.valueDecrease"
+                                    :color="uptimeCard.color"
+                                />
+                            </template>
                         </dl>
                     </SectionGroup>
                 </div>
@@ -64,7 +81,7 @@ const props = defineProps({
 
                         <Card>
                             <ContentBody>
-                                <UptimeTrendChart />
+                                <UptimeTrendChart :chart-data="props.uptimeTrend" />
                             </ContentBody>
                         </Card>
                     </SectionGroup>

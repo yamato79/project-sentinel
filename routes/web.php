@@ -7,11 +7,8 @@ Route::redirect('/', '/login');
 
 Route::group(['as' => 'panel.', 'middleware' => ['auth', 'verified']], function () {
 
-    Route::get('/dashboard', fn () => Inertia::render('panel/dashboard/index', [
-        'breadcrumbs' => [
-            ['label' => 'Dashboard', 'href' => route('panel.dashboard')],
-        ],
-    ]))->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])
+        ->name('dashboard');
 
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])
         ->name('profile.edit');
