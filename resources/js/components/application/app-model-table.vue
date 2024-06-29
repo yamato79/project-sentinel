@@ -75,9 +75,10 @@ const clearFilterForm = () => {
                     </template>
 
                     <Button type="submit" class="rounded-l-none">
-                        <span class="py-0.25">
-                            <FontAwesomeIcon :icon="'fa-solid fa-search'" :class="'text-gray-50'" aria-hidden="true" />
-                        </span>
+                        <template #icon>
+                            <FontAwesomeIcon icon="fa-solid fa-search" />
+                        </template>
+
                         <span class="hidden sm:block">
                             Search
                         </span>
