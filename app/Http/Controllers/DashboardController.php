@@ -48,7 +48,7 @@ class DashboardController extends Controller
             'paused' => '#eab308', // Amber 500
             'online' => '#10b981', // Emerald 500
             'offline' => '#f43f5e', // Rose 500
-            'unknown' => '#e5e7eb' // Gray 200
+            'default' => '#e5e7eb' // Gray 200
         ];
 
         // Map the data for Chart.js
