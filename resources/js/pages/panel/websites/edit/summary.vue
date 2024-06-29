@@ -61,9 +61,16 @@ const fetchUptimeFeed = () => {
     ]});
 };
 
-// Function to start reloading uptimeFeed every 30 seconds
 const startReloading = () => {
-    intervalId.value = setInterval(fetchUptimeFeed, 30000); // 30 seconds
+    const now = new Date();
+    const secondsUntilNextThirty = 30 - now.getSeconds() % 30; // Calculate seconds until next :00 or :30
+    const initialDelay = secondsUntilNextThirty * 1000; // Convert seconds to milliseconds
+
+    // Set the interval to run every 60 seconds starting from the next 30-second mark
+    setTimeout(() => {
+        fetchUptimeFeed(); // Immediately fetch data for the first time
+        intervalId.value = setInterval(fetchUptimeFeed, 60000); // 60 seconds
+    }, initialDelay);
 };
 
 // Hook to start interval on component mount
