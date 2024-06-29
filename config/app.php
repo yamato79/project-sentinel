@@ -123,4 +123,17 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Application Location
+    |--------------------------------------------------------------------------
+    |
+    | This is what's used to determine the location of the application's
+    | server. The country code where the server resides should be used.
+    | For example, "SG" for Singapore or "PH" for the Philippines.
+    |
+    */
+
+    'location' => env('APP_LOCATION', null),
+
 ];

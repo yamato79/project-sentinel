@@ -45,6 +45,7 @@ class CheckSSLExpiry implements ShouldQueue
         $expiresIn = Carbon::createFromTimestamp($certInfo['validTo_time_t'])->diffInDays();
 
         return [
+            'app_location' => config('app.location'),
             'ssl_expires_in' => $expiresIn,
         ];
     }

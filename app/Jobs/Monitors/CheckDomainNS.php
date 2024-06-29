@@ -40,6 +40,7 @@ class CheckDomainNS implements ShouldQueue
         exec("dig +short NS {$domain}", $nameservers);
 
         return [
+            'app_location' => config('app.location'),
             'nameservers' => $nameservers,
         ];
     }

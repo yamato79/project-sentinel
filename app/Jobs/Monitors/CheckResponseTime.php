@@ -39,6 +39,7 @@ class CheckResponseTime implements ShouldQueue
         $end = microtime(true);
 
         return [
+            'app_location' => config('app.location'),
             'response_time' => ($end - $start) * 1000,
         ];
     }

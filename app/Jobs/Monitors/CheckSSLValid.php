@@ -45,6 +45,7 @@ class CheckSSLValid implements ShouldQueue
         $valid = Carbon::now()->between(Carbon::createFromTimestamp($certInfo['validFrom_time_t']), Carbon::createFromTimestamp($certInfo['validTo_time_t']));
 
         return [
+            'app_location' => config('app.location'),
             'ssl_valid' => $valid,
         ];
     }

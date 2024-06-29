@@ -58,6 +58,7 @@ class CheckResponseCode implements ShouldQueue
         }
 
         return [
+            'app_location' => config('app.location'),
             'response_code' => $responseStatus,
         ];
     }
