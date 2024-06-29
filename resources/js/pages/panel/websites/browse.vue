@@ -65,7 +65,10 @@ const modelTable = {
             <AppModelTable :columns="modelTable.columns" :rows="modelTable.rows" :meta="modelTable.meta" :links="modelTable.links">
                 <template #actions>
                     <Button :href="route('panel.websites.create')" color="primary">
-                        <FontAwesomeIcon :icon="'fa-solid fa-plus'" :class="'text-gray-50'" />
+                        <template #icon>
+                            <FontAwesomeIcon icon="fa-solid fa-plus" />
+                        </template>
+
                         New Website
                     </Button>
                 </template>

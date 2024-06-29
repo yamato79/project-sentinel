@@ -125,13 +125,9 @@ const submitDeleteForm = () => {
                         </ContentBody>
 
                         <ContentFoot>
-                            <Button type="submit" color="primary" :disabled="form.processing || deleteForm.processing">
-                                <template v-if="form.processing">
-                                    <Spinner color="white" size="xs"></Spinner>
-                                </template>
-
-                                <template v-else>
-                                    <FontAwesomeIcon :icon="'fa-solid fa-save'" :class="'text-gray-50'" />
+                            <Button type="submit" color="primary" :is-loading="form.processing" :disabled="form.processing || deleteForm.processing">
+                                <template #icon>
+                                    <FontAwesomeIcon icon="fa-solid fa-save" />
                                 </template>
 
                                 Save Changes

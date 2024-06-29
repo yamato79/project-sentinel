@@ -245,7 +245,9 @@ const updateUser = ({ user_id, can_view, can_edit }: { user_id: number, can_view
 
                                         <TableData>
                                             <Button type="button" color="muted" size="sm" :disabled="detachUserForm.processing || props.stack.data.created_by_user_id == user.user_id" @click.stop="detachUser(user.user_id, user.name)">
-                                                <FontAwesomeIcon :icon="'fa-solid fa-trash'" />
+                                                <template #icon>
+                                                    <FontAwesomeIcon icon="fa-solid fa-trash" />
+                                                </template>
                                             </Button>
                                         </TableData>
                                     </template>

@@ -89,13 +89,9 @@ const submitForm = () => {
                                         Cancel
                                     </Button>
 
-                                    <Button type="submit" color="primary" :disabled="form.processing">
-                                        <template v-if="form.processing">
-                                            <Spinner color="white" size="sm"></Spinner>
-                                        </template>
-
-                                        <template v-else>
-                                            <FontAwesomeIcon :icon="'fa-solid fa-plus'" :class="'text-gray-50'" />
+                                    <Button type="submit" color="primary" :is-loading="form.processing" :disabled="form.processing">
+                                        <template #icon>
+                                            <FontAwesomeIcon icon="fa-solid fa-plus" />
                                         </template>
 
                                         Create Stack
