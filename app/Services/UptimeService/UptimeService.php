@@ -76,18 +76,24 @@ class UptimeService {
     /**
      * Get the uptime trend data globally or for a specific website.
      */
-    public static function getUptimeTrend(int $hours = 24, int $websiteId = null)
+    public static function getUptimeTrend(int $hours = 24, ?int $websiteId = null)
     {
-        $now = Carbon::now();
+        $now = now();
         $startDate = $now->copy()->subHours($hours);
         $endDate = $now;
 
-        $uptimeTrend = WebsiteUptimeHistoryHourly::query()
+        $query = WebsiteUptimeHistoryHourly::query()
             ->whereIn('website_id', Website::availableToUser(auth()->user())->pluck('website_id')->toArray())
-            ->when(!empty($websiteId), function ($query) use ($websiteId) {
-                $query->where('website_id', $websiteId);
-            })
-            ->whereBetween('hour_start', [$startDate, $endDate])
+            ->whereBetween('hour_start', [$startDate, $endDate]);
+
+        if (!is_null($websiteId)) {
+            $query->where('website_id', $websiteId);
+        }
+
+        $uptimeTrend = $query
+            ->select(DB::raw('TO_CHAR(hour_start, \'YYYY-MM-DD HH24:00:00\') as hour_start'), DB::raw('AVG(uptime_percentage) as uptime_percentage'))
+            ->groupBy(DB::raw('TO_CHAR(hour_start, \'YYYY-MM-DD HH24:00:00\')')) // Group by formatted hour
+            ->orderBy('hour_start')
             ->get();
 
         return $uptimeTrend;

@@ -37,7 +37,11 @@ class DashboardController extends Controller
         $availableWebsiteIds = Website::availableToUser(auth()->user())->pluck('website_id')->toArray();
 
         $statusData = WebsiteStatus::query()
-            ->withCount(['websites'])
+            ->withCount([
+                'websites' => function ($query) use ($availableWebsiteIds) {
+                    $query->whereIn('website_id', $availableWebsiteIds);
+                }
+            ])
             ->whereHas('websites', function ($query) use ($availableWebsiteIds) {
                 $query->whereIn('website_id', $availableWebsiteIds);
             })
@@ -70,6 +74,10 @@ class DashboardController extends Controller
             $chartData['datasets'][0]['backgroundColor'][] = $colors[$status->slug];
             $chartData['datasets'][0]['borderColor'][] = $colors[$status->slug];
         }
+
+        logger()->info("chartData", [
+            'raw' => $chartData
+        ]);
 
         return $chartData;
     }
