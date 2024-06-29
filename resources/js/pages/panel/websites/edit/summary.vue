@@ -61,9 +61,9 @@ const fetchUptimeFeed = () => {
     ]});
 };
 
-// Function to start reloading uptimeFeed every 60 seconds
+// Function to start reloading uptimeFeed every 30 seconds
 const startReloading = () => {
-    intervalId.value = setInterval(fetchUptimeFeed, 60000); // 60 seconds
+    intervalId.value = setInterval(fetchUptimeFeed, 30000); // 30 seconds
 };
 
 // Hook to start interval on component mount
