@@ -133,9 +133,9 @@ class WebsiteController extends Controller
         return Inertia::render('panel/websites/edit/summary', [
             'website' => new WebsiteResource($website),
             'uptimeCards' => UptimeService::getUptimeCards([
-                24 => "Uptime (24H)",
-                168 => "Uptime (7D)",
-                720 => "Uptime (30D)"
+                24 => 'Uptime (24H)',
+                168 => 'Uptime (7D)',
+                720 => 'Uptime (30D)',
             ], $website->getKey()),
             'uptimeTrend' => UptimeService::getUptimeTrendChartData(24, $website->getKey()),
             'uptimeFeed' => UptimeService::getUptimeFeed(1, $website->getKey()),

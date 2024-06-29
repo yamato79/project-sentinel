@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -86,8 +86,8 @@ class Website extends Model
                                     ->where('pivot_stacks_users.user_id', $user->getKey())
                                     ->whereNotNull('pivot_stacks_users.joined_at');
                             });
+                    });
             });
-        });
     }
 
     /**
