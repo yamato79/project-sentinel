@@ -196,9 +196,11 @@ class UptimeService
             ->where('website_id', $websiteId)
             // ->where('created_at', '>=', $startTime)
             ->select([
+                'website_id',
                 'raw_data->response_code as response_code',
                 'created_at',
             ])
+            ->groupBy('website_id', 'created_at', 'response_code')
             ->orderBy('created_at', 'desc')
             ->limit(60) // Limit the results to 60
             ->get();
