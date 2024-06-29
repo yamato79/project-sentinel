@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vue-tsc && vite build && vite build --ssr",
+        "build": "vue-tsc && vite build",
+        "build-ssr": "vue-tsc && vite build --ssr",
         "lint": "eslint 'resources/*/**/*.{js,ts,vue}'"
     },
     "devDependencies": {
