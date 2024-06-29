@@ -2,6 +2,8 @@
 
 namespace App\Services\UptimeService;
 
+use App\Models\MonitorQueue;
+use App\Models\MonitorType;
 use App\Models\Views\WebsiteUptimeHistoryDaily;
 use App\Models\Views\WebsiteUptimeHistoryHourly;
 use App\Models\Website;
@@ -172,5 +174,70 @@ class UptimeService {
                 'color' => $color
             ];
         })->toArray();
+    }
+
+    /**
+     * Get a website's uptime feed.
+     */
+    public static function getUptimeFeed(int $hours = 1, int $websiteId)
+    {
+        // Calculate the start time based on the hours parameter
+        $startTime = Carbon::now()->subHours($hours);
+    
+        // Get the initial data from the database
+        $data = MonitorQueue::query()
+            ->where('monitor_type_id', MonitorType::RESPONSE_CODE)
+            ->where('website_id', $websiteId)
+            // ->where('created_at', '>=', $startTime)
+            ->select([
+                'raw_data->response_code as response_code',
+                'created_at',
+            ])
+            ->orderBy('created_at', 'desc')
+            ->limit(60) // Limit the results to 60
+            ->get();
+    
+        // Create an array to hold the padded results
+        $paddedResults = [];
+    
+        // Initialize the current time to the end time (now)
+        $currentTime = Carbon::now();
+    
+        // Track the number of results to ensure we don't exceed 60
+        $resultsCount = 0;
+    
+        // Loop through each minute in the specified timeframe until we have 60 results
+        while ($resultsCount < 60) {
+            // Format the current time to compare without seconds
+            $formattedCurrentTime = $currentTime->format('Y-m-d H:i');
+    
+            // Check if there is a corresponding data point (compare without seconds)
+            $dataPoint = $data->first(fn($item) => $item->created_at->format('Y-m-d H:i') === $formattedCurrentTime);
+    
+            if ($dataPoint) {
+                // If there is a data point, add it to the results
+                $paddedResults[] = [
+                    'is_online' => ($dataPoint->response_code >= 200 && $dataPoint->response_code <= 299) ? true : false,
+                    'created_at' => $formattedCurrentTime,
+                ];
+                // Remove the used data point to avoid duplicate processing
+                $data = $data->reject(fn($item) => $item->created_at->format('Y-m-d H:i') === $formattedCurrentTime);
+            } else {
+                // If there is no data point, add a null entry
+                $paddedResults[] = [
+                    'is_online' => null,
+                    'created_at' => $formattedCurrentTime,
+                ];
+            }
+    
+            // Move to the previous minute
+            $currentTime->subMinute();
+    
+            // Increment the results count
+            $resultsCount++;
+        }
+    
+        // Return the results in chronological order
+        return array_reverse($paddedResults);
     }
 }

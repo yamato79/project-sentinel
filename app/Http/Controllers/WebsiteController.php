@@ -138,6 +138,7 @@ class WebsiteController extends Controller
                 720 => "Uptime (30D)"
             ], $website->getKey()),
             'uptimeTrend' => UptimeService::getUptimeTrendChartData(24, $website->getKey()),
+            'uptimeFeed' => UptimeService::getUptimeFeed(1, $website->getKey()),
             'tabs' => $this->getEditTabs($website),
             'breadcrumbs' => [
                 ['label' => 'Websites', 'href' => route('panel.websites.index')],
