@@ -55,6 +55,7 @@ const fetchUptimeFeed = () => {
     // Replace with your fetch logic to update uptimeFeed
     console.log("Refreshing Uptime Feed ...");
     router.reload({ only: [
+        'website',
         'uptimeCards',
         'uptimeFeed'
     ]});
