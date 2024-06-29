@@ -20,7 +20,6 @@ import SectionGridContainer from "@/components/section-grid-container.vue";
 import SectionGridContent from "@/components/section-grid-content.vue";
 import SectionGridSidebar from "@/components/section-grid-sidebar.vue";
 import SectionGrid from "@/components/section-grid.vue";
-import Spinner from "@/components/spinner.vue";
 
 defineOptions({ 
     layout: [PanelLayout, WebsiteEditIndexLayout],

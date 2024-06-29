@@ -1,7 +1,7 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from "vue";
 import { Head, router } from "@inertiajs/vue3";
 import PanelLayout from "@/components/layouts/panel/index.vue";
 import WebsiteEditIndexLayout from "./index.vue";
@@ -55,9 +55,9 @@ const fetchUptimeFeed = () => {
     // Replace with your fetch logic to update uptimeFeed
     console.log("Refreshing Uptime Feed ...");
     router.reload({ only: [
-        'website',
-        'uptimeCards',
-        'uptimeFeed'
+        "website",
+        "uptimeCards",
+        "uptimeFeed"
     ]});
 };
 
