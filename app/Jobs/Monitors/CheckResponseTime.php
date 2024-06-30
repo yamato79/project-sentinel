@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Monitors;
 
+use App\Models\MonitorLocation;
 use App\Models\MonitorQueue;
 use App\Models\MonitorType;
 use App\Models\Website;
@@ -22,11 +23,17 @@ class CheckResponseTime implements ShouldQueue
     protected $website;
 
     /**
+     * The monitor location to use.
+     */
+    protected $monitorLocation;
+
+    /**
      * Create a new job instance.
      */
-    public function __construct(Website $website)
+    public function __construct(Website $website, MonitorLocation $monitorLocation)
     {
         $this->website = $website;
+        $this->monitorLocation = $monitorLocation;
     }
 
     /**
@@ -35,18 +42,29 @@ class CheckResponseTime implements ShouldQueue
     public function executeMonitor()
     {
         $responseTime = null;
-        $start = microtime(true);
 
         try {
-            Http::timeout(15)->get($this->website->address);
-            $end = microtime(true);
-            $responseTime = ($end - $start) * 1000; // Response time in milliseconds
+            $response = Http::timeout(10)
+                ->withHeaders([
+                    'X-SENTINEL-HEADER' => 'sentinel',
+                ])
+                ->get("{$this->monitorLocation->agent_url}/response-time", [
+                    'address' => $this->website->address,
+                ]);
+
+            $parsedResponse = $response->json();
+
+            if (isset($parsedResponse['response_time'])) {
+                $responseTime = $parsedResponse['response_time'];
+            }
         } catch (\Exception $e) {
-            // ...
+            logger()->error('CheckResponseTime Failed', [
+                'message' => $e->getMessage(),
+            ]);
         }
 
         return [
-            'app_location' => config('app.location'),
+            'app_location' => $this->monitorLocation->slug,
             'response_time' => $responseTime,
         ];
     }

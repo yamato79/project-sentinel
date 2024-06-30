@@ -245,6 +245,11 @@ class UptimeService
             $resultsCount++;
         }
 
+        // Check the latest data point and fallback to the second latest if it's null
+        if (is_null($paddedResults[0]['is_online'])) {
+            $paddedResults[0]['is_online'] = $paddedResults[1]['is_online'];
+        }
+
         // Return the results in chronological order
         return array_reverse($paddedResults);
     }

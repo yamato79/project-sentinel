@@ -54,15 +54,6 @@ class Website extends Model
                 $website->slug = Str::slug($website->name).'-'.strtolower(Str::random(12));
             }
         });
-
-        static::created(function ($website) {
-            \App\Jobs\Monitors\CheckResponseCode::dispatch($website);
-            \App\Jobs\Monitors\CheckResponseTime::dispatch($website);
-            \App\Jobs\Monitors\CheckSSLValid::dispatch($website);
-            \App\Jobs\Monitors\CheckSSLExpiry::dispatch($website);
-            \App\Jobs\Monitors\CheckDomainExpiry::dispatch($website);
-            \App\Jobs\Monitors\CheckDomainNS::dispatch($website);
-        });
     }
 
     /**
@@ -107,6 +98,16 @@ class Website extends Model
     }
 
     /**
+     * Get the monitor locations that the website belongs to.
+     */
+    public function monitorLocations()
+    {
+        return $this->belongsToMany(MonitorLocation::class, 'pivot_monitor_locations_websites', 'website_id', 'monitor_location_id')
+            ->withTimestamps()
+            ->using(Pivot\MonitorLocationWebsite::class);
+    }
+
+    /**
      * The monitor queues that belong to the monitor type.
      */
     public function monitorQueues()
@@ -116,7 +117,7 @@ class Website extends Model
     }
 
     /**
-     * Get the stacks that the website belongs to,
+     * Get the stacks that the website belongs to.
      */
     public function stacks()
     {

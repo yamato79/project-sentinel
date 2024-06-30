@@ -7,6 +7,7 @@ import Button from "@/components/button.vue";
 import Card from "@/components/card.vue";
 import ContentBody from "@/components/content-body.vue";
 import ContentFoot from "@/components/content-foot.vue";
+import FormCheckbox from "@/components/form/form-checkbox.vue";
 import FormError from "@/components/form/form-error.vue";
 import FormGroup from "@/components/form/form-group.vue";
 import FormInput from "@/components/form/form-input.vue";
@@ -31,6 +32,10 @@ const props = defineProps({
         required: false,
         default: () => {},
     },
+    monitorLocations: {
+        type: Object,
+        required: true,
+    },
     tabs: {
         type: Array,
         required: false,
@@ -42,6 +47,7 @@ const form = useForm({
     name: props.website.data.name,
     address: props.website.data.address,
     is_monitor_active: props.website.data.is_monitor_active,
+    monitor_location_ids: props.website.data.monitor_location_ids,
 });
 
 const deleteForm = useForm({
@@ -120,6 +126,19 @@ const submitDeleteForm = () => {
                                 <FormLabel for="is_active" :required="true">Monitor Active</FormLabel>
                                 <FormToggle id="is_active" name="is_active" v-model="form.is_monitor_active" :disabled="form.processing || deleteForm.processing">Turn the monitor on or off.</FormToggle>
                                 <FormError v-if="form.errors.is_monitor_active">{{ form.errors.is_monitor_active }}</FormError>
+                            </FormGroup>
+
+                            <FormGroup class="col-span-full">
+                                <FormLabel for="address" :required="true">Monitor Locations</FormLabel>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+                                    <template v-for="(monitorLocation, monitorLocationIndex) in props.monitorLocations.data" :key="'monitorLocation_' + monitorLocationIndex">
+                                        <FormLabel class="inline-flex items-center justify-start gap-2 cursor-pointer">
+                                            <FormCheckbox :value="monitorLocation.monitor_location_id" v-model="form.monitor_location_ids" :disabled="form.processing" />
+                                            {{ monitorLocation.name }}
+                                        </FormLabel>
+                                    </template>
+                                </div>
+                                <FormError v-if="form.errors.monitor_location_ids">{{ form.errors.monitor_location_ids }}</FormError>
                             </FormGroup>
                         </ContentBody>
 

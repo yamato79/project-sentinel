@@ -2,15 +2,16 @@
 
 namespace App\Jobs\Monitors;
 
+use App\Models\MonitorLocation;
 use App\Models\MonitorQueue;
 use App\Models\MonitorType;
 use App\Models\Website;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
 
 class CheckDomainExpiry implements ShouldQueue
 {
@@ -22,11 +23,17 @@ class CheckDomainExpiry implements ShouldQueue
     protected $website;
 
     /**
+     * The monitor location to use.
+     */
+    protected $monitorLocation;
+
+    /**
      * Create a new job instance.
      */
-    public function __construct(Website $website)
+    public function __construct(Website $website, MonitorLocation $monitorLocation)
     {
         $this->website = $website;
+        $this->monitorLocation = $monitorLocation;
     }
 
     /**
@@ -34,23 +41,32 @@ class CheckDomainExpiry implements ShouldQueue
      */
     public function executeMonitor()
     {
-        $domain = parse_url($this->website->address, PHP_URL_HOST);
-        $whois = shell_exec("whois $domain");
+        $payload = [
+            'app_location' => $this->monitorLocation->slug,
+            'domain_expiry' => null,
+        ];
 
-        if (preg_match('/Registry Expiry Date: (.*)/', $whois, $matches)) {
-            $expirationDate = Carbon::parse(trim($matches[1]));
-            $expiresIn = Carbon::now()->diffInDays($expirationDate, false);
+        try {
+            $response = Http::timeout(10)
+                ->withHeaders([
+                    'X-SENTINEL-HEADER' => 'sentinel',
+                ])
+                ->get("{$this->monitorLocation->agent_url}/domain-expiry", [
+                    'address' => $this->website->address,
+                ]);
 
-            return [
-                'app_location' => config('app.location'),
-                'domain_expires_in' => $expiresIn,
-            ];
+            $parsedResponse = $response->json();
+
+            if (isset($parsedResponse['domain_expiry'])) {
+                $payload['domain_expiry'] = $parsedResponse['domain_expiry'];
+            }
+        } catch (\Exception $e) {
+            logger()->error('CheckDomainExpiry Failed', [
+                'message' => $e->getMessage(),
+            ]);
         }
 
-        return [
-            'app_location' => config('app.location'),
-            'error' => 'Could not retrieve expiration date',
-        ];
+        return $payload;
     }
 
     /**

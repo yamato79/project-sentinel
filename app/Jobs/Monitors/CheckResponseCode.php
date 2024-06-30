@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Monitors;
 
+use App\Models\MonitorLocation;
 use App\Models\MonitorQueue;
 use App\Models\MonitorType;
 use App\Models\Website;
@@ -23,11 +24,17 @@ class CheckResponseCode implements ShouldQueue
     protected $website;
 
     /**
+     * The monitor location to use.
+     */
+    protected $monitorLocation;
+
+    /**
      * Create a new job instance.
      */
-    public function __construct(Website $website)
+    public function __construct(Website $website, MonitorLocation $monitorLocation)
     {
         $this->website = $website;
+        $this->monitorLocation = $monitorLocation;
     }
 
     /**
@@ -38,10 +45,23 @@ class CheckResponseCode implements ShouldQueue
         $responseStatus = 504;
 
         try {
-            $response = Http::timeout(15)->get($this->website->address);
-            $responseStatus = $response->status();
+            $response = Http::timeout(10)
+                ->withHeaders([
+                    'X-SENTINEL-HEADER' => 'sentinel',
+                ])
+                ->get("{$this->monitorLocation->agent_url}/response-code", [
+                    'address' => $this->website->address,
+                ]);
+
+            $parsedResponse = $response->json();
+
+            if (isset($parsedResponse['response_code'])) {
+                $responseStatus = $parsedResponse['response_code'];
+            }
         } catch (\Exception $e) {
-            // ...
+            logger()->error('CheckResponseCode Failed', [
+                'message' => $e->getMessage(),
+            ]);
         }
 
         $isOnline = ($responseStatus >= 200 && $responseStatus <= 299);
@@ -65,7 +85,7 @@ class CheckResponseCode implements ShouldQueue
         }
 
         return [
-            'app_location' => config('app.location'),
+            'app_location' => $this->monitorLocation->slug,
             'response_code' => $responseStatus,
         ];
     }

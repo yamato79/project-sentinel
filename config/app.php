@@ -125,15 +125,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application Location
+    | Application Monitor Domain
     |--------------------------------------------------------------------------
     |
-    | This is what's used to determine the location of the application's
-    | server. The country code where the server resides should be used.
-    | For example, "SG" for Singapore or "PH" for the Philippines.
+    | This is what's used to determine the URL for the agents.
     |
     */
 
-    'location' => env('APP_LOCATION', null),
+    'monitor_domain' => env('APP_MONITOR_DOMAIN', null),
 
 ];

@@ -2,15 +2,16 @@
 
 namespace App\Jobs\Monitors;
 
+use App\Models\MonitorLocation;
 use App\Models\MonitorQueue;
 use App\Models\MonitorType;
 use App\Models\Website;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
 
 class CheckSSLValid implements ShouldQueue
 {
@@ -22,11 +23,17 @@ class CheckSSLValid implements ShouldQueue
     protected $website;
 
     /**
+     * The monitor location to use.
+     */
+    protected $monitorLocation;
+
+    /**
      * Create a new job instance.
      */
-    public function __construct(Website $website)
+    public function __construct(Website $website, MonitorLocation $monitorLocation)
     {
         $this->website = $website;
+        $this->monitorLocation = $monitorLocation;
     }
 
     /**
@@ -34,20 +41,32 @@ class CheckSSLValid implements ShouldQueue
      */
     public function executeMonitor()
     {
-        $parsedUrl = parse_url($this->website->address);
-        $hostname = $parsedUrl['host'];
-
-        $context = stream_context_create(['ssl' => ['capture_peer_cert' => true]]);
-        $client = stream_socket_client('ssl://'.$hostname.':443', $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context);
-        $cert = stream_context_get_params($client)['options']['ssl']['peer_certificate'];
-        $certInfo = openssl_x509_parse($cert);
-
-        $valid = Carbon::now()->between(Carbon::createFromTimestamp($certInfo['validFrom_time_t']), Carbon::createFromTimestamp($certInfo['validTo_time_t']));
-
-        return [
-            'app_location' => config('app.location'),
-            'ssl_valid' => $valid,
+        $payload = [
+            'app_location' => $this->monitorLocation->slug,
+            'ssl_valid' => null,
         ];
+
+        try {
+            $response = Http::timeout(10)
+                ->withHeaders([
+                    'X-SENTINEL-HEADER' => 'sentinel',
+                ])
+                ->get("{$this->monitorLocation->agent_url}/ssl-valid", [
+                    'address' => $this->website->address,
+                ]);
+
+            $parsedResponse = $response->json();
+
+            if (isset($parsedResponse['ssl_valid'])) {
+                $payload['ssl_valid'] = $parsedResponse['ssl_valid'];
+            }
+        } catch (\Exception $e) {
+            logger()->error('CheckSSLValid Failed', [
+                'message' => $e->getMessage(),
+            ]);
+        }
+
+        return $payload;
     }
 
     /**

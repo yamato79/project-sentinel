@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Monitors;
 
+use App\Models\MonitorLocation;
 use App\Models\MonitorQueue;
 use App\Models\MonitorType;
 use App\Models\Website;
@@ -10,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
 
 class CheckDomainNS implements ShouldQueue
 {
@@ -21,11 +23,17 @@ class CheckDomainNS implements ShouldQueue
     protected $website;
 
     /**
+     * The monitor location to use.
+     */
+    protected $monitorLocation;
+
+    /**
      * Create a new job instance.
      */
-    public function __construct(Website $website)
+    public function __construct(Website $website, MonitorLocation $monitorLocation)
     {
         $this->website = $website;
+        $this->monitorLocation = $monitorLocation;
     }
 
     /**
@@ -33,16 +41,32 @@ class CheckDomainNS implements ShouldQueue
      */
     public function executeMonitor()
     {
-        $domain = parse_url($this->website->address, PHP_URL_HOST);
-        $nameservers = [];
-
-        // Use dig command to get nameservers
-        exec("dig +short NS {$domain}", $nameservers);
-
-        return [
-            'app_location' => config('app.location'),
-            'nameservers' => $nameservers,
+        $payload = [
+            'app_location' => $this->monitorLocation->slug,
+            'domain_ns' => null,
         ];
+
+        try {
+            $response = Http::timeout(10)
+                ->withHeaders([
+                    'X-SENTINEL-HEADER' => 'sentinel',
+                ])
+                ->get("{$this->monitorLocation->agent_url}/domain-ns", [
+                    'address' => $this->website->address,
+                ]);
+
+            $parsedResponse = $response->json();
+
+            if (isset($parsedResponse['domain_ns'])) {
+                $payload['domain_ns'] = $parsedResponse['domain_ns'];
+            }
+        } catch (\Exception $e) {
+            logger()->error('CheckDomainNS Failed', [
+                'message' => $e->getMessage(),
+            ]);
+        }
+
+        return $payload;
     }
 
     /**

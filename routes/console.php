@@ -4,6 +4,18 @@ use App\Models\Website;
 use App\Models\WebsiteStatus;
 use Illuminate\Support\Facades\Artisan;
 
+function getWebsites()
+{
+    return Website::query()
+        ->with([
+            'monitorLocations' => function ($query) {
+                $query->where('is_active', true);
+            },
+        ])
+        ->whereNot('website_status_id', WebsiteStatus::PAUSED)
+        ->cursor();
+}
+
 /**
  * Application: Migrate SQL Views
  */
@@ -20,12 +32,10 @@ Artisan::command('migrate:views', function () {
  * Monitor: Response Code
  */
 Artisan::command('app:queue-batch-check-response-code', function () {
-    $websites = Website::query()
-        ->whereNot('website_status_id', WebsiteStatus::PAUSED)
-        ->cursor();
-
-    foreach ($websites as $website) {
-        \App\Jobs\Monitors\CheckResponseCode::dispatch($website);
+    foreach (getWebsites() as $website) {
+        $website->monitorLocations->each(function ($monitorLocation) use ($website) {
+            \App\Jobs\Monitors\CheckResponseCode::dispatch($website, $monitorLocation);
+        });
     }
 })->everyMinute();
 
@@ -33,12 +43,10 @@ Artisan::command('app:queue-batch-check-response-code', function () {
  * Monitor: Response Time
  */
 Artisan::command('app:queue-batch-check-response-time', function () {
-    $websites = Website::query()
-        ->whereNot('website_status_id', WebsiteStatus::PAUSED)
-        ->cursor();
-
-    foreach ($websites as $website) {
-        \App\Jobs\Monitors\CheckResponseTime::dispatch($website);
+    foreach (getWebsites() as $website) {
+        $website->monitorLocations->each(function ($monitorLocation) use ($website) {
+            \App\Jobs\Monitors\CheckResponseTime::dispatch($website, $monitorLocation);
+        });
     }
 })->everyMinute();
 
@@ -46,12 +54,10 @@ Artisan::command('app:queue-batch-check-response-time', function () {
  * Monitor: SSL Valid
  */
 Artisan::command('app:queue-batch-check-ssl-valid', function () {
-    $websites = Website::query()
-        ->whereNot('website_status_id', WebsiteStatus::PAUSED)
-        ->cursor();
-
-    foreach ($websites as $website) {
-        \App\Jobs\Monitors\CheckSSLValid::dispatch($website);
+    foreach (getWebsites() as $website) {
+        $website->monitorLocations->each(function ($monitorLocation) use ($website) {
+            \App\Jobs\Monitors\CheckSSLValid::dispatch($website);
+        });
     }
 })->daily();
 
@@ -59,12 +65,10 @@ Artisan::command('app:queue-batch-check-ssl-valid', function () {
  * Monitor: SSL Expiry
  */
 Artisan::command('app:queue-batch-check-ssl-expiry', function () {
-    $websites = Website::query()
-        ->whereNot('website_status_id', WebsiteStatus::PAUSED)
-        ->cursor();
-
-    foreach ($websites as $website) {
-        \App\Jobs\Monitors\CheckSSLExpiry::dispatch($website);
+    foreach (getWebsites() as $website) {
+        $website->monitorLocations->each(function ($monitorLocation) use ($website) {
+            \App\Jobs\Monitors\CheckSSLExpiry::dispatch($website);
+        });
     }
 })->weekly();
 
@@ -72,12 +76,10 @@ Artisan::command('app:queue-batch-check-ssl-expiry', function () {
  * Monitor: Domain Expiry
  */
 Artisan::command('app:queue-batch-check-domain-expiry', function () {
-    $websites = Website::query()
-        ->whereNot('website_status_id', WebsiteStatus::PAUSED)
-        ->cursor();
-
-    foreach ($websites as $website) {
-        \App\Jobs\Monitors\CheckDomainExpiry::dispatch($website);
+    foreach (getWebsites() as $website) {
+        $website->monitorLocations->each(function ($monitorLocation) use ($website) {
+            \App\Jobs\Monitors\CheckDomainExpiry::dispatch($website);
+        });
     }
 })->daily();
 
@@ -85,11 +87,9 @@ Artisan::command('app:queue-batch-check-domain-expiry', function () {
  * Monitor: Domain Nameservers
  */
 Artisan::command('app:queue-batch-check-domain-ns', function () {
-    $websites = Website::query()
-        ->whereNot('website_status_id', WebsiteStatus::PAUSED)
-        ->cursor();
-
-    foreach ($websites as $website) {
-        \App\Jobs\Monitors\CheckDomainNS::dispatch($website);
+    foreach (getWebsites() as $website) {
+        $website->monitorLocations->each(function ($monitorLocation) use ($website) {
+            \App\Jobs\Monitors\CheckDomainNS::dispatch($website);
+        });
     }
 })->daily();

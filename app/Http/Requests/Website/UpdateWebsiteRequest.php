@@ -46,6 +46,20 @@ class UpdateWebsiteRequest extends FormRequest
             'name' => 'required|string|min:1|max:255',
             'address' => 'required|url:http,https|min:1|max:255',
             'website_status_id' => 'required|integer|exists:website_statuses,website_status_id',
+            'monitor_location_ids' => 'required|array',
+            'monitor_location_ids.*' => 'required|integer|exists:monitor_locations,monitor_location_id',
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'monitor_location_ids.required' => 'Please select at least one monitor location.',
         ];
     }
 }

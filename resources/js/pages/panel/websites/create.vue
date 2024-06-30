@@ -7,6 +7,7 @@ import Card from "@/components/card.vue";
 import Container from "@/components/container.vue";
 import ContentBody from "@/components/content-body.vue";
 import ContentFoot from "@/components/content-foot.vue";
+import FormCheckbox from "@/components/form/form-checkbox.vue";
 import FormError from "@/components/form/form-error.vue";
 import FormGrid from "@/components/form/form-grid.vue";
 import FormGroup from "@/components/form/form-group.vue";
@@ -26,9 +27,17 @@ defineOptions({
     layout: PanelLayout,
 });
 
+const props = defineProps({
+    monitorLocations: {
+        type: Object,
+        required: true,
+    },
+});
+
 const form = useForm({
     name: "",
     address: "",
+    monitor_location_ids: [],
 });
 
 const submitForm = () => {
@@ -81,6 +90,19 @@ const submitForm = () => {
                                             <FormLabel for="address" :required="true">Address</FormLabel>
                                             <FormInput type="text" id="address" name="address" v-model="form.address" placeholder="https://acme.com" :disabled="form.processing" :required="true" />
                                             <FormError v-if="form.errors.address">{{ form.errors.address }}</FormError>
+                                        </FormGroup>
+
+                                        <FormGroup class="col-span-full">
+                                            <FormLabel for="address" :required="true">Monitor Locations</FormLabel>
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+                                                <template v-for="(monitorLocation, monitorLocationIndex) in props.monitorLocations.data" :key="'monitorLocation_' + monitorLocationIndex">
+                                                    <FormLabel class="inline-flex items-center justify-start gap-2 cursor-pointer">
+                                                        <FormCheckbox :value="monitorLocation.monitor_location_id" v-model="form.monitor_location_ids" :disabled="form.processing" />
+                                                        {{ monitorLocation.name }}
+                                                    </FormLabel>
+                                                </template>
+                                            </div>
+                                            <FormError v-if="form.errors.monitor_location_ids">{{ form.errors.monitor_location_ids }}</FormError>
                                         </FormGroup>
                                     </FormGrid>
                                 </ContentBody>

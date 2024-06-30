@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Website\CreateWebsiteRequest;
 use App\Http\Requests\Website\DeleteWebsiteRequest;
 use App\Http\Requests\Website\UpdateWebsiteRequest;
+use App\Http\Resources\MonitorLocationResource;
 use App\Http\Resources\WebsiteResource;
+use App\Models\MonitorLocation;
 use App\Models\Website;
 use App\Services\UptimeService\UptimeService;
 use Illuminate\Http\Request;
@@ -43,7 +45,12 @@ class WebsiteController extends Controller
     {
         Gate::authorize('create', new Website());
 
+        $monitorLocations = MonitorLocation::query()
+            ->where('is_active', true)
+            ->get();
+
         return Inertia::render('panel/websites/create', [
+            'monitorLocations' => MonitorLocationResource::collection($monitorLocations),
             'breadcrumbs' => [
                 ['label' => 'Websites', 'href' => route('panel.websites.index')],
                 ['label' => 'Create', 'href' => route('panel.websites.create')],
@@ -62,6 +69,18 @@ class WebsiteController extends Controller
             'website_status_id',
         ]));
 
+        $website->monitorLocations()
+            ->sync($request->validated()['monitor_location_ids']);
+
+        $website->monitorLocations->each(function ($monitorLocation) use ($website) {
+            \App\Jobs\Monitors\CheckResponseCode::dispatch($website, $monitorLocation);
+            \App\Jobs\Monitors\CheckResponseTime::dispatch($website, $monitorLocation);
+            \App\Jobs\Monitors\CheckSSLValid::dispatch($website, $monitorLocation);
+            \App\Jobs\Monitors\CheckSSLExpiry::dispatch($website, $monitorLocation);
+            \App\Jobs\Monitors\CheckDomainExpiry::dispatch($website, $monitorLocation);
+            \App\Jobs\Monitors\CheckDomainNS::dispatch($website, $monitorLocation);
+        });
+
         return redirect()->route('panel.websites.edit.summary', [
             'website' => $website,
         ]);
@@ -77,6 +96,9 @@ class WebsiteController extends Controller
             'address',
             'website_status_id',
         ]));
+
+        $website->monitorLocations()
+            ->sync($request->validated()['monitor_location_ids']);
 
         return redirect()->back()->with([
             'website' => $website,
@@ -157,12 +179,20 @@ class WebsiteController extends Controller
         Gate::authorize('update', $website);
 
         $website->load([
+            'monitorLocations' => function ($query) {
+                $query->where('is_active', true);
+            },
             'websiteStatus',
         ]);
+
+        $monitorLocations = MonitorLocation::query()
+            ->where('is_active', true)
+            ->get();
 
         return Inertia::render('panel/websites/edit/settings', [
             'website' => new WebsiteResource($website),
             'tabs' => $this->getEditTabs($website),
+            'monitorLocations' => MonitorLocationResource::collection($monitorLocations),
             'breadcrumbs' => [
                 ['label' => 'Websites', 'href' => route('panel.websites.index')],
                 ['label' => $website->name, 'href' => route('panel.websites.edit', ['website' => $website])],
