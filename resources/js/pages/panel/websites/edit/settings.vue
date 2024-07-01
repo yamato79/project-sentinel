@@ -130,7 +130,7 @@ const submitDeleteForm = () => {
 
                             <FormGroup class="col-span-full">
                                 <FormLabel for="address" :required="true">Monitor Locations</FormLabel>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2">
                                     <template v-for="(monitorLocation, monitorLocationIndex) in props.monitorLocations.data" :key="'monitorLocation_' + monitorLocationIndex">
                                         <FormLabel class="inline-flex items-center justify-start gap-2 cursor-pointer">
                                             <FormCheckbox :value="monitorLocation.monitor_location_id" v-model="form.monitor_location_ids" :disabled="form.processing" />
