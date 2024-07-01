@@ -63,6 +63,18 @@ class MonitorLocation extends Model
     }
 
     /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope('orderByName', function ($builder) {
+            $builder->orderBy('name');
+        });
+    }
+
+    /**
      * Get the websites that belong to the monitor location.
      */
     public function websites()

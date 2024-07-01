@@ -54,6 +54,10 @@ class Website extends Model
                 $website->slug = Str::slug($website->name).'-'.strtolower(Str::random(12));
             }
         });
+
+        static::addGlobalScope('orderByName', function ($builder) {
+            $builder->orderBy('name');
+        });
     }
 
     /**
