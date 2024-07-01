@@ -51,34 +51,34 @@ Artisan::command('app:queue-batch-check-response-time', function () {
 })->everyMinute();
 
 /**
- * Monitor: SSL Valid
+ * Monitor: SSL Validity
  */
-Artisan::command('app:queue-batch-check-ssl-valid', function () {
+Artisan::command('app:queue-batch-check-ssl-validity', function () {
     foreach (getWebsites() as $website) {
         $website->monitorLocations->each(function ($monitorLocation) use ($website) {
-            \App\Jobs\Monitors\CheckSSLValid::dispatch($website);
+            \App\Jobs\Monitors\CheckSSLValidity::dispatch($website);
         });
     }
 })->daily();
 
 /**
- * Monitor: SSL Expiry
+ * Monitor: SSL Expiration
  */
-Artisan::command('app:queue-batch-check-ssl-expiry', function () {
+Artisan::command('app:queue-batch-check-ssl-expiration', function () {
     foreach (getWebsites() as $website) {
         $website->monitorLocations->each(function ($monitorLocation) use ($website) {
-            \App\Jobs\Monitors\CheckSSLExpiry::dispatch($website);
+            \App\Jobs\Monitors\CheckSSLExpiration::dispatch($website);
         });
     }
 })->weekly();
 
 /**
- * Monitor: Domain Expiry
+ * Monitor: Domain Expiration
  */
-Artisan::command('app:queue-batch-check-domain-expiry', function () {
+Artisan::command('app:queue-batch-check-domain-expiration', function () {
     foreach (getWebsites() as $website) {
         $website->monitorLocations->each(function ($monitorLocation) use ($website) {
-            \App\Jobs\Monitors\CheckDomainExpiry::dispatch($website);
+            \App\Jobs\Monitors\CheckDomainExpiration::dispatch($website);
         });
     }
 })->daily();
@@ -89,7 +89,7 @@ Artisan::command('app:queue-batch-check-domain-expiry', function () {
 Artisan::command('app:queue-batch-check-domain-ns', function () {
     foreach (getWebsites() as $website) {
         $website->monitorLocations->each(function ($monitorLocation) use ($website) {
-            \App\Jobs\Monitors\CheckDomainNS::dispatch($website);
+            \App\Jobs\Monitors\CheckDomainNameservers::dispatch($website);
         });
     }
 })->daily();
