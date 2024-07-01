@@ -13,6 +13,7 @@ use App\Services\UptimeService\UptimeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use DB;
 
 class WebsiteController extends Controller
 {
@@ -63,23 +64,39 @@ class WebsiteController extends Controller
      */
     public function store(CreateWebsiteRequest $request)
     {
-        $website = Website::create($request->safe()->only([
-            'name',
-            'address',
-            'website_status_id',
-        ]));
+        DB::beginTransaction();
 
-        $website->monitorLocations()
-            ->sync($request->validated()['monitor_location_ids']);
+        try {
+            $website = Website::create($request->safe()->only([
+                'name',
+                'address',
+                'website_status_id',
+            ]));
+    
+            $website->monitorLocations()
+                ->sync($request->validated()['monitor_location_ids']);
 
-        $website->monitorLocations->each(function ($monitorLocation) use ($website) {
-            \App\Jobs\Monitors\CheckResponseCode::dispatch($website, $monitorLocation);
-            \App\Jobs\Monitors\CheckResponseTime::dispatch($website, $monitorLocation);
-            \App\Jobs\Monitors\CheckSSLValid::dispatch($website, $monitorLocation);
-            \App\Jobs\Monitors\CheckSSLExpiry::dispatch($website, $monitorLocation);
-            \App\Jobs\Monitors\CheckDomainExpiry::dispatch($website, $monitorLocation);
-            \App\Jobs\Monitors\CheckDomainNS::dispatch($website, $monitorLocation);
-        });
+            $website->monitorLocations->each(function ($monitorLocation) use ($website) {
+                \App\Jobs\Monitors\CheckDomainExpiration::dispatch($website, $monitorLocation);
+                \App\Jobs\Monitors\CheckDomainNameservers::dispatch($website, $monitorLocation);
+                \App\Jobs\Monitors\CheckLighthouse::dispatch($website, $monitorLocation);
+                \App\Jobs\Monitors\CheckResponseCode::dispatch($website, $monitorLocation);
+                \App\Jobs\Monitors\CheckResponseTime::dispatch($website, $monitorLocation);
+                \App\Jobs\Monitors\CheckSSLExpiration::dispatch($website, $monitorLocation);
+                \App\Jobs\Monitors\CheckSSLValidity::dispatch($website, $monitorLocation);
+            });
+        
+            DB::commit();
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            logger()->error("Error creating new website.", [
+                'raw' => $e->getMessage(),
+            ]);
+
+            return redirect()->back();
+        }
 
         return redirect()->route('panel.websites.edit.summary', [
             'website' => $website,
