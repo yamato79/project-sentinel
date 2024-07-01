@@ -13,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 
-class CheckSSLExpiry implements ShouldQueue
+class CheckDomainExpiration implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -28,12 +28,18 @@ class CheckSSLExpiry implements ShouldQueue
     protected $monitorLocation;
 
     /**
+     * The monitor location to use.
+     */
+    protected $monitorType;
+
+    /**
      * Create a new job instance.
      */
     public function __construct(Website $website, MonitorLocation $monitorLocation)
     {
         $this->website = $website;
         $this->monitorLocation = $monitorLocation;
+        $this->monitorType = MonitorType::findOrFail(MonitorType::DOMAIN_EXPIRATION);
     }
 
     /**
@@ -43,7 +49,8 @@ class CheckSSLExpiry implements ShouldQueue
     {
         $payload = [
             'app_location' => $this->monitorLocation->slug,
-            'ssl_expiry' => null,
+            'message' => '',
+            'status' => 'success',
         ];
 
         try {
@@ -51,19 +58,17 @@ class CheckSSLExpiry implements ShouldQueue
                 ->withHeaders([
                     'X-SENTINEL-HEADER' => 'sentinel',
                 ])
-                ->get("{$this->monitorLocation->agent_url}/ssl-expiry", [
+                ->get("{$this->monitorLocation->agent_url}/{$this->monitorType->slug}", [
                     'address' => $this->website->address,
                 ]);
 
-            $parsedResponse = $response->json();
-
-            if (isset($parsedResponse['ssl_expiry'])) {
-                $payload['ssl_expiry'] = $parsedResponse['ssl_expiry'];
-            }
+            $payload = array_merge(
+                $payload,
+                $response->json()
+            );
         } catch (\Exception $e) {
-            logger()->error('CheckSSLExpiry Failed', [
-                'message' => $e->getMessage(),
-            ]);
+            $payload['message'] = $e->getMessage();
+            $payload['status'] = 'error';
         }
 
         return $payload;
@@ -76,7 +81,7 @@ class CheckSSLExpiry implements ShouldQueue
     {
         MonitorQueue::create([
             'website_id' => $this->website->getKey(),
-            'monitor_type_id' => MonitorType::SSL_EXPIRY,
+            'monitor_type_id' => $this->monitorType->getKey(),
             'raw_data' => $this->executeMonitor(),
         ]);
     }

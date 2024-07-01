@@ -15,16 +15,16 @@ FROM
         SELECT
             monitor_queue.website_id,
             date_trunc('hour'::text, monitor_queue.created_at) AS hour_start,
-            COUNT(*) FILTER (WHERE (monitor_queue.raw_data ->> 'response_code'::text) IS NOT NULL) AS total_responses,
+            COUNT(*) FILTER (WHERE (monitor_queue.raw_data -> 'data' ->> 'response_code'::text) IS NOT NULL) AS total_responses,
             COUNT(*) FILTER (
                 WHERE
-                    (monitor_queue.raw_data ->> 'response_code'::text)::integer >= 200 AND
-                    (monitor_queue.raw_data ->> 'response_code'::text)::integer <= 299
+                    (monitor_queue.raw_data -> 'data' ->> 'response_code'::text)::integer >= 200 AND
+                    (monitor_queue.raw_data -> 'data' ->> 'response_code'::text)::integer <= 299
             ) AS successful_responses
         FROM
             monitor_queue
         WHERE
-            (monitor_queue.raw_data ->> 'response_code'::text) IS NOT NULL
+            (monitor_queue.raw_data -> 'data' ->> 'response_code'::text) IS NOT NULL
         GROUP BY
             monitor_queue.website_id,
             date_trunc('hour'::text, monitor_queue.created_at)

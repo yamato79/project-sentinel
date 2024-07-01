@@ -13,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 
-class CheckDomainExpiry implements ShouldQueue
+class CheckLighthouse implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -28,12 +28,18 @@ class CheckDomainExpiry implements ShouldQueue
     protected $monitorLocation;
 
     /**
+     * The monitor location to use.
+     */
+    protected $monitorType;
+
+    /**
      * Create a new job instance.
      */
     public function __construct(Website $website, MonitorLocation $monitorLocation)
     {
         $this->website = $website;
         $this->monitorLocation = $monitorLocation;
+        $this->monitorType = MonitorType::findOrFail(MonitorType::LIGHTHOUSE);
     }
 
     /**
@@ -43,27 +49,26 @@ class CheckDomainExpiry implements ShouldQueue
     {
         $payload = [
             'app_location' => $this->monitorLocation->slug,
-            'domain_expiry' => null,
+            'message' => '',
+            'status' => 'success',
         ];
 
         try {
-            $response = Http::timeout(10)
+            $response = Http::timeout(120)
                 ->withHeaders([
                     'X-SENTINEL-HEADER' => 'sentinel',
                 ])
-                ->get("{$this->monitorLocation->agent_url}/domain-expiry", [
+                ->get("{$this->monitorLocation->agent_url}/{$this->monitorType->slug}", [
                     'address' => $this->website->address,
                 ]);
 
-            $parsedResponse = $response->json();
-
-            if (isset($parsedResponse['domain_expiry'])) {
-                $payload['domain_expiry'] = $parsedResponse['domain_expiry'];
-            }
+            $payload = array_merge(
+                $payload,
+                $response->json()
+            );
         } catch (\Exception $e) {
-            logger()->error('CheckDomainExpiry Failed', [
-                'message' => $e->getMessage(),
-            ]);
+            $payload['message'] = $e->getMessage();
+            $payload['status'] = 'error';
         }
 
         return $payload;
@@ -76,7 +81,7 @@ class CheckDomainExpiry implements ShouldQueue
     {
         MonitorQueue::create([
             'website_id' => $this->website->getKey(),
-            'monitor_type_id' => MonitorType::DOMAIN_EXPIRY,
+            'monitor_type_id' => $this->monitorType->getKey(),
             'raw_data' => $this->executeMonitor(),
         ]);
     }

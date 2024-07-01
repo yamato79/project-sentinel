@@ -11,13 +11,15 @@ class MonitorType extends Model
 
     const RESPONSE_TIME = 2;
 
-    const SSL_VALID = 3;
+    const SSL_VALIDITY = 3;
 
-    const SSL_EXPIRY = 4;
+    const SSL_EXPIRATION = 4;
 
-    const DOMAIN_EXPIRY = 5;
+    const DOMAIN_EXPIRATION = 5;
 
-    const DOMAIN_NS = 6;
+    const DOMAIN_NAMESERVERS= 6;
+
+    const LIGHTHOUSE = 7;
 
     /**
      * The table associated with the model.

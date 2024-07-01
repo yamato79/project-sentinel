@@ -13,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 
-class CheckDomainNS implements ShouldQueue
+class CheckDomainNameservers implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -28,12 +28,18 @@ class CheckDomainNS implements ShouldQueue
     protected $monitorLocation;
 
     /**
+     * The monitor location to use.
+     */
+    protected $monitorType;
+
+    /**
      * Create a new job instance.
      */
     public function __construct(Website $website, MonitorLocation $monitorLocation)
     {
         $this->website = $website;
         $this->monitorLocation = $monitorLocation;
+        $this->monitorType = MonitorType::findOrFail(MonitorType::DOMAIN_NAMESERVERS);
     }
 
     /**
@@ -43,7 +49,8 @@ class CheckDomainNS implements ShouldQueue
     {
         $payload = [
             'app_location' => $this->monitorLocation->slug,
-            'domain_ns' => null,
+            'message' => '',
+            'status' => 'success',
         ];
 
         try {
@@ -51,19 +58,17 @@ class CheckDomainNS implements ShouldQueue
                 ->withHeaders([
                     'X-SENTINEL-HEADER' => 'sentinel',
                 ])
-                ->get("{$this->monitorLocation->agent_url}/domain-ns", [
+                ->get("{$this->monitorLocation->agent_url}/{$this->monitorType->slug}", [
                     'address' => $this->website->address,
                 ]);
 
-            $parsedResponse = $response->json();
-
-            if (isset($parsedResponse['domain_ns'])) {
-                $payload['domain_ns'] = $parsedResponse['domain_ns'];
-            }
+            $payload = array_merge(
+                $payload,
+                $response->json()
+            );
         } catch (\Exception $e) {
-            logger()->error('CheckDomainNS Failed', [
-                'message' => $e->getMessage(),
-            ]);
+            $payload['message'] = $e->getMessage();
+            $payload['status'] = 'error';
         }
 
         return $payload;
@@ -76,7 +81,7 @@ class CheckDomainNS implements ShouldQueue
     {
         MonitorQueue::create([
             'website_id' => $this->website->getKey(),
-            'monitor_type_id' => MonitorType::DOMAIN_NS,
+            'monitor_type_id' => $this->monitorType->getKey(),
             'raw_data' => $this->executeMonitor(),
         ]);
     }

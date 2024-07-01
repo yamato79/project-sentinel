@@ -6,7 +6,6 @@ use App\Models\MonitorLocation;
 use App\Models\MonitorQueue;
 use App\Models\MonitorType;
 use App\Models\Website;
-use App\Models\WebsiteStatus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 
-class CheckResponseCode implements ShouldQueue
+class CheckSSLExpiration implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -40,7 +39,7 @@ class CheckResponseCode implements ShouldQueue
     {
         $this->website = $website;
         $this->monitorLocation = $monitorLocation;
-        $this->monitorType = MonitorType::findOrFail(MonitorType::RESPONSE_CODE);
+        $this->monitorType = MonitorType::findOrFail(MonitorType::SSL_EXPIRATION);
     }
 
     /**
@@ -67,29 +66,6 @@ class CheckResponseCode implements ShouldQueue
                 $payload,
                 $response->json()
             );
-
-            $isOnline = (
-                $payload['data']['response_code'] >= 200 &&
-                $payload['data']['response_code'] <= 299
-            );
-
-            /**
-             * If the website is offline AND the website status is not offline or paused.
-             */
-            if (! $isOnline && ! in_array($this->website->website_status_id, [WebsiteStatus::OFFLINE, WebsiteStatus::PAUSED])) {
-                $this->website->update([
-                    'website_status_id' => WebsiteStatus::OFFLINE,
-                ]);
-            }
-
-            /**
-             * If the website is online AND the website status is not online or paused.
-             */
-            if ($isOnline && ! in_array($this->website->website_status_id, [WebsiteStatus::ONLINE, WebsiteStatus::PAUSED])) {
-                $this->website->update([
-                    'website_status_id' => WebsiteStatus::ONLINE,
-                ]);
-            }
         } catch (\Exception $e) {
             $payload['message'] = $e->getMessage();
             $payload['status'] = 'error';

@@ -197,7 +197,7 @@ class UptimeService
             // ->where('created_at', '>=', $startTime)
             ->select([
                 'website_id',
-                'raw_data->response_code as response_code',
+                'raw_data->data->response_code as response_code',
                 'created_at',
             ])
             ->groupBy('website_id', 'created_at', 'response_code')

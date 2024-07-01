@@ -28,12 +28,18 @@ class CheckResponseTime implements ShouldQueue
     protected $monitorLocation;
 
     /**
+     * The monitor location to use.
+     */
+    protected $monitorType;
+
+    /**
      * Create a new job instance.
      */
     public function __construct(Website $website, MonitorLocation $monitorLocation)
     {
         $this->website = $website;
         $this->monitorLocation = $monitorLocation;
+        $this->monitorType = MonitorType::findOrFail(MonitorType::RESPONSE_TIME);
     }
 
     /**
@@ -41,32 +47,31 @@ class CheckResponseTime implements ShouldQueue
      */
     public function executeMonitor()
     {
-        $responseTime = null;
+        $payload = [
+            'app_location' => $this->monitorLocation->slug,
+            'message' => '',
+            'status' => 'success',
+        ];
 
         try {
             $response = Http::timeout(10)
                 ->withHeaders([
                     'X-SENTINEL-HEADER' => 'sentinel',
                 ])
-                ->get("{$this->monitorLocation->agent_url}/response-time", [
+                ->get("{$this->monitorLocation->agent_url}/{$this->monitorType->slug}", [
                     'address' => $this->website->address,
                 ]);
 
-            $parsedResponse = $response->json();
-
-            if (isset($parsedResponse['response_time'])) {
-                $responseTime = $parsedResponse['response_time'];
-            }
+            $payload = array_merge(
+                $payload,
+                $response->json()
+            );
         } catch (\Exception $e) {
-            logger()->error('CheckResponseTime Failed', [
-                'message' => $e->getMessage(),
-            ]);
+            $payload['message'] = $e->getMessage();
+            $payload['status'] = 'error';
         }
 
-        return [
-            'app_location' => $this->monitorLocation->slug,
-            'response_time' => $responseTime,
-        ];
+        return $payload;
     }
 
     /**
@@ -76,7 +81,7 @@ class CheckResponseTime implements ShouldQueue
     {
         MonitorQueue::create([
             'website_id' => $this->website->getKey(),
-            'monitor_type_id' => MonitorType::RESPONSE_TIME,
+            'monitor_type_id' => $this->monitorType->getKey(),
             'raw_data' => $this->executeMonitor(),
         ]);
     }

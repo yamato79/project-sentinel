@@ -13,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 
-class CheckSSLValid implements ShouldQueue
+class CheckSSLValidity implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -28,12 +28,18 @@ class CheckSSLValid implements ShouldQueue
     protected $monitorLocation;
 
     /**
+     * The monitor location to use.
+     */
+    protected $monitorType;
+
+    /**
      * Create a new job instance.
      */
     public function __construct(Website $website, MonitorLocation $monitorLocation)
     {
         $this->website = $website;
         $this->monitorLocation = $monitorLocation;
+        $this->monitorType = MonitorType::findOrFail(MonitorType::SSL_VALIDITY);
     }
 
     /**
@@ -43,7 +49,8 @@ class CheckSSLValid implements ShouldQueue
     {
         $payload = [
             'app_location' => $this->monitorLocation->slug,
-            'ssl_valid' => null,
+            'message' => '',
+            'status' => 'success',
         ];
 
         try {
@@ -51,19 +58,17 @@ class CheckSSLValid implements ShouldQueue
                 ->withHeaders([
                     'X-SENTINEL-HEADER' => 'sentinel',
                 ])
-                ->get("{$this->monitorLocation->agent_url}/ssl-valid", [
+                ->get("{$this->monitorLocation->agent_url}/{$this->monitorType->slug}", [
                     'address' => $this->website->address,
                 ]);
 
-            $parsedResponse = $response->json();
-
-            if (isset($parsedResponse['ssl_valid'])) {
-                $payload['ssl_valid'] = $parsedResponse['ssl_valid'];
-            }
+            $payload = array_merge(
+                $payload,
+                $response->json()
+            );
         } catch (\Exception $e) {
-            logger()->error('CheckSSLValid Failed', [
-                'message' => $e->getMessage(),
-            ]);
+            $payload['message'] = $e->getMessage();
+            $payload['status'] = 'error';
         }
 
         return $payload;
@@ -76,7 +81,7 @@ class CheckSSLValid implements ShouldQueue
     {
         MonitorQueue::create([
             'website_id' => $this->website->getKey(),
-            'monitor_type_id' => MonitorType::SSL_VALID,
+            'monitor_type_id' => $this->monitorType->getKey(),
             'raw_data' => $this->executeMonitor(),
         ]);
     }
