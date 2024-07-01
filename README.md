@@ -17,9 +17,7 @@
 ### Future Releases
 1. Screenshot Monitoring - Determines if a website changed drastically via screenshots and a configurable percent of change that is acceptable.
 
-2. Response Size Monitoring - Keeps track of the website size and notifies when there is a drastic change. The percent change to notify would be configurable.
-
-3. Lighthouse Scores - Integrate Lighthouse scanning for the websites to keep track of performance over time.
+2. Lighthouse Scores - Integrate Lighthouse scanning for the websites to keep track of performance over time.
 
 ## Setup Instructions
 
