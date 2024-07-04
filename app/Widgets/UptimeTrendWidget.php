@@ -89,10 +89,6 @@ class UptimeTrendWidget
                     'fill' => false,
                 ];
 
-                logger()->info('uptimeData', [
-                    'raw' => $uptimeData,
-                ]);
-
                 continue;
             }
 
