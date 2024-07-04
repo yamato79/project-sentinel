@@ -40,6 +40,19 @@ const getData = async () => {
     isLoading.value = false;
 };
 
+const refreshData = async () => {
+    isLoading.value = true;
+
+    try {
+        await fetch(route("api.widgets.ssl-status.execute", { website_id: props.websiteId }));
+        await getData();
+    } catch (error) {
+        console.error(error);
+    }
+
+    isLoading.value = false;
+}
+
 getData();
 </script>
 
@@ -49,15 +62,23 @@ getData();
             <dt>
                 <div :class="['absolute rounded-md bg-gray-700 p-3']">
                     <div class="w-6 h-6 flex items-center justify-center text-white text-lg">
-                        <FontAwesomeIcon :icon="'fa-solid fa-times'" class="text-gray-500" v-if="isValid === null || isLoading" />
-                        <FontAwesomeIcon :icon="'fa-solid fa-check'" class="text-success-500" v-else-if="isValid" />
-                        <FontAwesomeIcon :icon="'fa-solid fa-times'" class="text-danger-500" v-else-if="!isValid" />
+                        <FontAwesomeIcon icon="fa-solid fa-times" class="text-gray-500" v-if="isValid === null || isLoading" />
+                        <FontAwesomeIcon icon="fa-solid fa-check" class="text-success-500" v-else-if="isValid" />
+                        <FontAwesomeIcon icon="fa-solid fa-times" class="text-danger-500" v-else-if="!isValid" />
                     </div>
                 </div>
 
-                <p class="ml-16 truncate text-sm font-medium text-gray-500">
-                    SSL Certificate
-                </p>
+                <div class="ml-16 flex items-center justify-between">
+                    <p class="truncate text-sm font-medium text-gray-500">
+                        SSL Certificate
+                    </p>
+
+                    <div class="absolute right-6">
+                        <a href="#" class="text-xs text-gray-400 hover:text-primary-600" @click.stop="refreshData">
+                            <FontAwesomeIcon icon="fa-solid fa-rotate" :class="[isLoading ? 'fa-spin' : '', 'w-4 h-4']" />
+                        </a>
+                    </div>
+                </div>
             </dt>
 
             <dd class="ml-16 flex items-baseline">

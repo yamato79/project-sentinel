@@ -2,6 +2,7 @@
 
 namespace App\Widgets;
 
+use App\Models\Website;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -54,5 +55,32 @@ class SSLStatusWidget
             ],
             'errors' => [],
         ];
+    }
+
+    /**
+     * Execute the monitor in synchronously.
+     */
+    public function execute()
+    {
+        try {
+            $website = Website::findOrFail($this->request->get('website_id'));
+
+            $monitorLocations = $website->monitorLocations()
+                ->where('is_active', true)
+                ->get();
+
+            $monitorLocations->each(function ($monitorLocation) use ($website) {
+                \App\Jobs\Monitors\CheckSSLExpiration::dispatchSync($website, $monitorLocation);
+                \App\Jobs\Monitors\CheckSSLValidity::dispatchSync($website, $monitorLocation);
+            });
+
+            return [
+                'message' => 'ok',
+            ];
+        } catch (\Exception $e) {
+            return [
+                'message' => $e->getMessage(),
+            ];
+        }
     }
 }

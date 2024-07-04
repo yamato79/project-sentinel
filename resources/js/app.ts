@@ -5,7 +5,7 @@ import { createInertiaApp } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faCheck, faCheckCircle, faLongArrowLeft, faDisplay, faGlobe, faGear, faPlus, faRightFromBracket, faSave, faPaperPlane, faSearch, faTimes, faTimesCircle, faTrash, faUserCircle, faUserGear, faSignOutAlt, faLayerGroup, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCheckCircle, faLongArrowLeft, faDisplay, faGlobe, faGear, faPlus, faRotate, faRightFromBracket, faSave, faPaperPlane, faSearch, faTimes, faTimesCircle, faTrash, faUserCircle, faUserGear, faSignOutAlt, faLayerGroup, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(
@@ -20,6 +20,7 @@ library.add(
     faUserGear,
     faSearch,
     faPlus,
+    faRotate,
     faSave,
     faPaperPlane,
     faTimes,

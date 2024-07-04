@@ -104,8 +104,14 @@ Route::group(['prefix' => '/api', 'as' => 'api.', 'middleware' => ['auth', 'veri
     Route::get('/widgets/ssl-status', fn (Request $request) => (new \App\Widgets\SSLStatusWidget($request))->getData())
         ->name('widgets.ssl-status');
 
+    Route::get('/widgets/ssl-status/execute', fn (Request $request) => (new \App\Widgets\SSLStatusWidget($request))->execute())
+        ->name('widgets.ssl-status.execute');
+
     Route::get('/widgets/domain-status', fn (Request $request) => (new \App\Widgets\DomainStatusWidget($request))->getData())
         ->name('widgets.domain-status');
+
+    Route::get('/widgets/domain-status/execute', fn (Request $request) => (new \App\Widgets\DomainStatusWidget($request))->execute())
+        ->name('widgets.domain-status.execute');
 
     Route::get('/widgets/domain-nameservers-table', fn (Request $request) => (new \App\Widgets\DomainNameserversTableWidget($request))->getData())
         ->name('widgets.domain-nameservers-table');

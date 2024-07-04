@@ -40,6 +40,19 @@ const getData = async () => {
     isLoading.value = false;
 };
 
+const refreshData = async () => {
+    isLoading.value = true;
+
+    try {
+        await fetch(route("api.widgets.domain-status.execute", { website_id: props.websiteId }));
+        await getData();
+    } catch (error) {
+        console.error(error);
+    }
+
+    isLoading.value = false;
+}
+
 getData();
 </script>
 
@@ -55,9 +68,17 @@ getData();
                     </div>
                 </div>
 
-                <p class="ml-16 truncate text-sm font-medium text-gray-500">
+                <div class="ml-16 flex items-center justify-between">
+                    <p class="truncate text-sm font-medium text-gray-500">
                     Domain Status
-                </p>
+                    </p>
+
+                    <div class="absolute right-6">
+                        <a href="#" class="text-xs text-gray-400 hover:text-primary-600" @click.stop="refreshData">
+                            <FontAwesomeIcon icon="fa-solid fa-rotate" :class="[isLoading ? 'fa-spin' : '', 'w-4 h-4']" />
+                        </a>
+                    </div>
+                </div>
             </dt>
 
             <dd class="ml-16 flex items-baseline">
