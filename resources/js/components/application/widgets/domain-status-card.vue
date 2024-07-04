@@ -17,11 +17,9 @@ const isLoading = ref(true);
 
 const getData = async () => {
     try {
-        const params = {
+        const response = await fetch(route("api.widgets.domain-status", {
             website_id: props.websiteId,
-        } as { [key: string]: string | number };
-
-        const response = await fetch(route("api.widgets.domain-status", params));
+        }));
 
         if (!response.ok) {
             throw new Error("HTTP error! Status: " + response.status);
@@ -45,13 +43,16 @@ const refreshData = async () => {
 
     try {
         await fetch(route("api.widgets.domain-status.execute", { website_id: props.websiteId }));
-        await getData();
+
+        setTimeout(async () => {
+            await getData();
+            isLoading.value = false;
+        }, 5000);
     } catch (error) {
         console.error(error);
+        isLoading.value = false;
     }
-
-    isLoading.value = false;
-}
+};
 
 getData();
 </script>
@@ -70,11 +71,11 @@ getData();
 
                 <div class="ml-16 flex items-center justify-between">
                     <p class="truncate text-sm font-medium text-gray-500">
-                    Domain Status
+                        Domain Status
                     </p>
 
                     <div class="absolute right-6">
-                        <a href="#" class="text-xs text-gray-400 hover:text-primary-600" @click.stop="refreshData">
+                        <a href="#" :class="[isLoading ? 'pointer-events-none' : '', 'text-xs text-gray-400 hover:text-primary-600']" @click.stop="refreshData">
                             <FontAwesomeIcon icon="fa-solid fa-rotate" :class="[isLoading ? 'fa-spin' : '', 'w-4 h-4']" />
                         </a>
                     </div>

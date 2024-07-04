@@ -45,13 +45,16 @@ const refreshData = async () => {
 
     try {
         await fetch(route("api.widgets.ssl-status.execute", { website_id: props.websiteId }));
-        await getData();
+
+        setTimeout(async () => {
+            await getData();
+            isLoading.value = false;
+        }, 5000);
     } catch (error) {
         console.error(error);
+        isLoading.value = false;
     }
-
-    isLoading.value = false;
-}
+};
 
 getData();
 </script>
@@ -74,7 +77,7 @@ getData();
                     </p>
 
                     <div class="absolute right-6">
-                        <a href="#" class="text-xs text-gray-400 hover:text-primary-600" @click.stop="refreshData">
+                        <a href="#" :class="[isLoading ? 'pointer-events-none' : '', 'text-xs text-gray-400 hover:text-primary-600']" @click.stop="refreshData">
                             <FontAwesomeIcon icon="fa-solid fa-rotate" :class="[isLoading ? 'fa-spin' : '', 'w-4 h-4']" />
                         </a>
                     </div>
