@@ -13,6 +13,7 @@ import Paragraph from "@/components/paragraph.vue";
 import SectionGroup from "@/components/section-group.vue";
 import DomainNameserversTable from "@/components/application/widgets/domain-nameservers-table.vue";
 import DomainStatusCard from "@/components/application/widgets/domain-status-card.vue";
+import ResponseTimeTrend from "@/components/application/widgets/response-time-trend.vue";
 import SSLStatusCard from "@/components/application/widgets/ssl-status-card.vue";
 import UptimeCard from "@/components/application/widgets/uptime-card.vue";
 import UptimeFeed from "@/components/application/widgets/uptime-feed.vue";
@@ -106,6 +107,16 @@ const props = defineProps({
                             <Card>
                                 <ContentBody>
                                     <UptimeTrend :website-id="props.website.data.website_id" :hours="24" />
+                                </ContentBody>
+                            </Card>
+                        </SectionGroup>
+
+                        <SectionGroup>
+                            <Heading :size="4">Response Time Trend (24H)</Heading>
+
+                            <Card>
+                                <ContentBody>
+                                    <ResponseTimeTrend :website-id="props.website.data.website_id" :hours="24" />
                                 </ContentBody>
                             </Card>
                         </SectionGroup>

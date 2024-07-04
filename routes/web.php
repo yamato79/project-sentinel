@@ -101,6 +101,9 @@ Route::group(['prefix' => '/api', 'as' => 'api.', 'middleware' => ['auth', 'veri
     Route::get('/widgets/uptime-trend', fn (Request $request) => (new \App\Widgets\UptimeTrendWidget($request))->getData())
         ->name('widgets.uptime-trend');
 
+    Route::get('/widgets/response-time-trend', fn (Request $request) => (new \App\Widgets\ResponseTimeTrendWidget($request))->getData())
+        ->name('widgets.response-time-trend');
+
     Route::get('/widgets/ssl-status', fn (Request $request) => (new \App\Widgets\SSLStatusWidget($request))->getData())
         ->name('widgets.ssl-status');
 
