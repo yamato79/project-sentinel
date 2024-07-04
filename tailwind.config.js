@@ -64,7 +64,7 @@ export default {
                 },
         
                 success: {
-                    ...colors.emerald,
+                    ...colors.green,
                 },
         
                 warning: {
@@ -72,7 +72,7 @@ export default {
                 },
         
                 danger: {
-                    ...colors.rose,
+                    ...colors.red,
                 },
             },
         },
