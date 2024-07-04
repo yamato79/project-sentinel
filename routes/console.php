@@ -59,7 +59,7 @@ Artisan::command('app:queue-batch-check-ssl-validity', function () {
             \App\Jobs\Monitors\CheckSSLValidity::dispatch($website);
         });
     }
-})->daily();
+})->dailyAt('01:00');
 
 /**
  * Monitor: SSL Expiration
@@ -70,7 +70,7 @@ Artisan::command('app:queue-batch-check-ssl-expiration', function () {
             \App\Jobs\Monitors\CheckSSLExpiration::dispatch($website);
         });
     }
-})->weekly();
+})->dailyAt('02:00');
 
 /**
  * Monitor: Domain Expiration
@@ -81,7 +81,7 @@ Artisan::command('app:queue-batch-check-domain-expiration', function () {
             \App\Jobs\Monitors\CheckDomainExpiration::dispatch($website);
         });
     }
-})->daily();
+})->dailyAt('03:00');
 
 /**
  * Monitor: Domain Nameservers
@@ -92,4 +92,4 @@ Artisan::command('app:queue-batch-check-domain-ns', function () {
             \App\Jobs\Monitors\CheckDomainNameservers::dispatch($website);
         });
     }
-})->daily();
+})->dailyAt('04:00');
