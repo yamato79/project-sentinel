@@ -87,6 +87,6 @@ getData();
         v-if="!isLoading"
         :chart-options="chartOptions"
         :chart-data="chartData"
-        class="h-auto sm:h-64"
+        class="h-auto sm:h-48"
     />
 </template>
