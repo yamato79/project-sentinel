@@ -1,8 +1,7 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
-import { Head, router } from "@inertiajs/vue3";
+import { Head } from "@inertiajs/vue3";
 import PanelLayout from "@/components/layouts/panel/index.vue";
 import WebsiteEditIndexLayout from "./index.vue";
 import Badge from "@/components/badge.vue";
@@ -12,8 +11,12 @@ import Heading from "@/components/heading.vue";
 import MountedTeleport from "@/components/mounted-teleport.vue";
 import Paragraph from "@/components/paragraph.vue";
 import SectionGroup from "@/components/section-group.vue";
+import DomainNameserversTable from "@/components/application/widgets/domain-nameservers-table.vue";
+import DomainStatusCard from "@/components/application/widgets/domain-status-card.vue";
+import SSLStatusCard from "@/components/application/widgets/ssl-status-card.vue";
 import UptimeCard from "@/components/application/widgets/uptime-card.vue";
-import UptimeTrendChart from "@/components/application/widgets/uptime-trend-chart.vue";
+import UptimeFeed from "@/components/application/widgets/uptime-feed.vue";
+import UptimeTrend from "@/components/application/widgets/uptime-trend.vue";
 
 defineOptions({ 
     layout: [PanelLayout, WebsiteEditIndexLayout],
@@ -46,44 +49,6 @@ const props = defineProps({
         default: () => {},
     },
 });
-
-// Create a ref to hold the interval ID
-const intervalId = ref<any>(null);
-
-// Function to fetch uptimeFeed data
-const fetchUptimeFeed = () => {
-    // Replace with your fetch logic to update uptimeFeed
-    console.log("Refreshing Uptime Feed ...");
-    router.reload({ only: [
-        "website",
-        "uptimeCards",
-        "uptimeFeed"
-    ]});
-};
-
-const startReloading = () => {
-    const now = new Date();
-    const secondsUntilNextThirty = 30 - now.getSeconds() % 30; // Calculate seconds until next :00 or :30
-    const initialDelay = secondsUntilNextThirty * 1000; // Convert seconds to milliseconds
-
-    // Set the interval to run every 60 seconds starting from the next 30-second mark
-    setTimeout(() => {
-        fetchUptimeFeed(); // Immediately fetch data for the first time
-        intervalId.value = setInterval(fetchUptimeFeed, 60000); // 60 seconds
-    }, initialDelay);
-};
-
-// Hook to start interval on component mount
-onMounted(() => {
-    startReloading();
-});
-
-// Hook to clear interval on component unmount
-onUnmounted(() => {
-    if (intervalId.value) {
-        clearInterval(intervalId.value);
-    }
-});
 </script>
 
 <template>
@@ -101,54 +66,58 @@ onUnmounted(() => {
         <div class="col-span-full sm:col-span-4 grid grid-cols-1 gap-10">
             <div class="grid grid-cols-6 gap-6">
                 <div class="col-span-full sm:col-span-3 xl:col-span-2">
-                    <SectionGroup>
-                        <Heading :size="4">Uptime Summary</Heading>
+                    <div class="grid grid-cols-1 gap-8">
+                        <SectionGroup>
+                            <Heading :size="4">Uptime Summary</Heading>
 
-                        <dl class="grid grid-cols-1 gap-6">
-                            <template v-for="(uptimeCard, uptimeCardIndex) in props.uptimeCards" :key="'uptimeCard_' + uptimeCardIndex">
-                                <UptimeCard
-                                    :title="uptimeCard.title"
-                                    :currentValue="uptimeCard.currentValue"
-                                    :previousValue="uptimeCard.previousValue"
-                                    :valueIncrease="uptimeCard.valueIncrease"
-                                    :valueDecrease="uptimeCard.valueDecrease"
-                                    :color="uptimeCard.color"
-                                />
-                            </template>
-                        </dl>
-                    </SectionGroup>
+                            <dl class="grid grid-cols-1 gap-4">
+                                <UptimeCard :website-id="props.website.data.website_id" :title="'Uptime (24H)'" :hours="24" />
+                                <UptimeCard :website-id="props.website.data.website_id" :title="'Uptime (7D)'"  :hours="(24 * 7)" />
+                                <UptimeCard :website-id="props.website.data.website_id" :title="'Uptime (30D)'" :hours="(24 * 30)" />
+                            </dl>
+                        </SectionGroup>
+
+                        <SectionGroup>
+                            <Heading :size="4">Domain Summary</Heading>
+
+                            <div class="grid grid-cols-1 gap-4">
+                                <SSLStatusCard :website-id="props.website.data.website_id" />
+                                <DomainStatusCard :website-id="props.website.data.website_id" />
+                            </div>
+                        </SectionGroup>
+                    </div>
                 </div>
 
-                <div class="col-span-full sm:col-span-3 xl:col-span-4 grid grid-cols-1 gap-6">
-                    <SectionGroup>
-                        <Heading :size="4">Uptime Feed (1H)</Heading>
+                <div class="col-span-full sm:col-span-3 xl:col-span-4">
+                    <div class="grid grid-cols-1 gap-8">
+                        <SectionGroup>
+                            <Heading :size="4">Uptime Feed (1H)</Heading>
 
-                        <Card>
-                            <ContentBody>
-                                <div class="w-full flex items-center justify-center gap-[2px] rounded-sm overflow-hidden">
-                                    <template v-for="(tick, tickIndex) in props.uptimeFeed" :key="'tick_' + tickIndex">
-                                        <template v-if="tick.is_online == null">
-                                            <div :class="['bg-gray-300', 'flex-1 min-w-[1px] h-8 rounded-sm']"></div>
-                                        </template>
+                            <Card>
+                                <ContentBody>
+                                    <UptimeFeed :website-id="props.website.data.website_id" :minutes="60" />
+                                </ContentBody>
+                            </Card>
+                        </SectionGroup>
 
-                                        <template v-else>
-                                            <div :class="[(tick.is_online) ? 'bg-green-500' : 'bg-red-500', 'flex-1 min-w-[1px] h-8 rounded-sm']"></div>
-                                        </template>
-                                    </template>
-                                </div>
-                            </ContentBody>
-                        </Card>
-                    </SectionGroup>
+                        <SectionGroup>
+                            <Heading :size="4">Uptime Trend (24H)</Heading>
 
-                    <SectionGroup>
-                        <Heading :size="4">Uptime Trend (24H)</Heading>
+                            <Card>
+                                <ContentBody>
+                                    <UptimeTrend :website-id="props.website.data.website_id" :hours="24" />
+                                </ContentBody>
+                            </Card>
+                        </SectionGroup>
 
-                        <Card>
-                            <ContentBody>
-                                <UptimeTrendChart :chart-data="props.uptimeTrend" />
-                            </ContentBody>
-                        </Card>
-                    </SectionGroup>
+                        <SectionGroup>
+                            <Heading :size="4">Domain Nameservers History (7D)</Heading>
+
+                            <Card>
+                                <DomainNameserversTable :website-id="props.website.data.website_id" />
+                            </Card>
+                        </SectionGroup>
+                    </div>
                 </div>
             </div>
         </div>

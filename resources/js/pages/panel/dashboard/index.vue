@@ -10,7 +10,7 @@ import Paragraph from "@/components/paragraph.vue";
 import SectionGroup from "@/components/section-group.vue";
 import Section from "@/components/section.vue";
 import UptimeCard from "@/components/application/widgets/uptime-card.vue";
-import UptimeTrendChart from "@/components/application/widgets/uptime-trend-chart.vue";
+import UptimeTrend from "@/components/application/widgets/uptime-trend.vue";
 import WebsiteStatusDistributionChart from "@/components/application/widgets/website-status-distribution-chart.vue";
 
 defineOptions({ 
@@ -53,16 +53,9 @@ const props = defineProps({
                 <Heading :size="4">Uptime Summary</Heading>
 
                 <dl class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    <template v-for="(uptimeCard, uptimeCardIndex) in props.uptimeCards" :key="'uptimeCard_' + uptimeCardIndex">
-                        <UptimeCard
-                            :title="uptimeCard.title"
-                            :currentValue="uptimeCard.currentValue"
-                            :previousValue="uptimeCard.previousValue"
-                            :valueIncrease="uptimeCard.valueIncrease"
-                            :valueDecrease="uptimeCard.valueDecrease"
-                            :color="uptimeCard.color"
-                        />
-                    </template>
+                    <UptimeCard :title="'Uptime (24H)'" :hours="24" />
+                    <UptimeCard :title="'Uptime (7D)'" :hours="(24 * 7)" />
+                    <UptimeCard :title="'Uptime (30D)'" :hours="(24 * 30)" />
                 </dl>
             </SectionGroup>
 
@@ -72,7 +65,7 @@ const props = defineProps({
 
                     <Card>
                         <ContentBody class="h-96">
-                            <UptimeTrendChart :chart-data="props.uptimeTrend" />
+                            <UptimeTrend :hours="24" />
                         </ContentBody>
                     </Card>
                 </SectionGroup>

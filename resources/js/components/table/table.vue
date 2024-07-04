@@ -1,6 +1,6 @@
 <template>
     <Card>
-        <div class="v-table flow-root overflow-hidden">
+        <div class="v-table flow-root overflow-hidden rounded-md">
             <div class="overflow-x-auto">
                 <div class="inline-block min-w-full align-middle">
                     <div class="overflow-hidden">

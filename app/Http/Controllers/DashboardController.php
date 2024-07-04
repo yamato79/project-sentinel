@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Website;
 use App\Models\WebsiteStatus;
-use App\Services\UptimeService\UptimeService;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -15,12 +14,6 @@ class DashboardController extends Controller
     public function index()
     {
         return Inertia::render('panel/dashboard/index', [
-            'uptimeCards' => UptimeService::getUptimeCards([
-                24 => 'Uptime (24H)',
-                168 => 'Uptime (7D)',
-                720 => 'Uptime (30D)',
-            ]),
-            'uptimeTrend' => UptimeService::getUptimeTrendChartData(24),
             'websiteStatusDistribution' => $this->getWebsiteStatusDistribution(),
             'breadcrumbs' => [
                 ['label' => 'Dashboard', 'href' => route('panel.dashboard')],
@@ -48,10 +41,21 @@ class DashboardController extends Controller
 
         // Define the colors for each status
         $colors = [
-            'paused' => '#eab308', // Amber 500
+            'limited' => '#ffcd56',
+            'paused' => '#c9cbcf',
             'online' => '#10b981', // Emerald 500
             'offline' => '#f43f5e', // Rose 500
-            'default' => '#e5e7eb', // Gray 200
+            'default' => '#c9cbcf',
+        ];
+
+        $chartColors = [
+            'AF' => 'rgb(255, 99, 132)',
+            'AN' => 'rgb(255, 159, 64)',
+            'AS' => 'rgb(255, 205, 86)',
+            'EU' => 'rgb(75, 192, 192)',
+            'NA' => 'rgb(54, 162, 235)',
+            'OC' => 'rgb(153, 102, 255)',
+            'SA' => 'rgb(201, 203, 207)',
         ];
 
         // Map the data for Chart.js

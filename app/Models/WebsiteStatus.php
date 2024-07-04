@@ -15,6 +15,8 @@ class WebsiteStatus extends Model
 
     const PAUSED = 4;
 
+    const LIMITED = 5;
+
     /**
      * The table associated with the model.
      *

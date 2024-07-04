@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
@@ -86,6 +87,28 @@ Route::group(['as' => 'panel.', 'middleware' => ['auth', 'verified']], function 
 
     Route::resource('websites', \App\Http\Controllers\WebsiteController::class)
         ->except(['edit', 'show']);
+
+});
+
+Route::group(['prefix' => '/api', 'as' => 'api.', 'middleware' => ['auth', 'verified']], function () {
+
+    Route::get('widgets/uptime-card', fn (Request $request) => response()->json((new \App\Widgets\UptimeCardWidget($request))->getData()))
+        ->name('widgets.uptime-card');
+
+    Route::get('/widgets/uptime-feed', fn (Request $request) => (new \App\Widgets\UptimeFeedWidget($request))->getData())
+        ->name('widgets.uptime-feed');
+
+    Route::get('/widgets/uptime-trend', fn (Request $request) => (new \App\Widgets\UptimeTrendWidget($request))->getData())
+        ->name('widgets.uptime-trend');
+
+    Route::get('/widgets/ssl-status', fn (Request $request) => (new \App\Widgets\SSLStatusWidget($request))->getData())
+        ->name('widgets.ssl-status');
+
+    Route::get('/widgets/domain-status', fn (Request $request) => (new \App\Widgets\DomainStatusWidget($request))->getData())
+        ->name('widgets.domain-status');
+
+    Route::get('/widgets/domain-nameservers-table', fn (Request $request) => (new \App\Widgets\DomainNameserversTableWidget($request))->getData())
+        ->name('widgets.domain-nameservers-table');
 
 });
 

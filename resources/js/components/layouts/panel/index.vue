@@ -41,17 +41,25 @@
                 </div>
             </div>
 
-            <nav class="flex border-b border-gray-200 bg-white" aria-label="Breadcrumb">
-                <Breadcrumb>
-                    <template v-for="(breadcrumbItem, breadcrumbItemIndex) in props.breadcrumbs" :key="'breadcrumbItem_' + breadcrumbItemIndex">
-                        <BreadcrumbItem :href="breadcrumbItem.href">
-                            {{ breadcrumbItem.label }}
-                        </BreadcrumbItem>
-                    </template>
-                    
-                    <div id="breadcrumbs" class="flex"></div>
-                </Breadcrumb>
-            </nav>
+            <div class="w-full border-b border-gray-200 bg-white">
+                <div class="w-full max-w-7xl mx-auto flex items-center justify-between">
+                    <nav class="flex" aria-label="Breadcrumb">
+                        <Breadcrumb>
+                            <template v-for="(breadcrumbItem, breadcrumbItemIndex) in props.breadcrumbs" :key="'breadcrumbItem_' + breadcrumbItemIndex">
+                                <BreadcrumbItem :href="breadcrumbItem.href">
+                                    {{ breadcrumbItem.label }}
+                                </BreadcrumbItem>
+                            </template>
+                            
+                            <div id="breadcrumbs" class="flex"></div>
+                        </Breadcrumb>
+                    </nav>
+
+                    <div class="px-4 sm:px-6 lg:px-8">
+                        <Clock />
+                    </div>
+                </div>
+            </div>
 
             <main class="">
                 <slot></slot>
@@ -67,6 +75,7 @@ import { Link } from "@inertiajs/vue3";
 import { Bars3Icon } from "@heroicons/vue/24/outline";
 import Breadcrumb from "@/components/breadcrumb.vue";
 import BreadcrumbItem from "@/components/breadcrumb-item.vue";
+import Clock from "@/components/application/widgets/clock.vue";
 import SidebarDesktop from "./_sidebar_desktop.vue";
 import SidebarMobile from "./_sidebar_mobile.vue";
 

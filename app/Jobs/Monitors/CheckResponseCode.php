@@ -7,6 +7,7 @@ use App\Models\MonitorQueue;
 use App\Models\MonitorType;
 use App\Models\Website;
 use App\Models\WebsiteStatus;
+use DB;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -73,22 +74,43 @@ class CheckResponseCode implements ShouldQueue
                 $payload['data']['response_code'] <= 299
             );
 
+            $averageUptimePercent = DB::table('v_website_uptime_feed')
+                ->where('website_id', $this->website->getKey())
+                ->whereBetween('minute', [
+                    now()->startOfMinute()->subMinutes(2),
+                    now(),
+                ])
+                ->get()
+                ->avg('avg_uptime_percent');
+
             /**
              * If the website is offline AND the website status is not offline or paused.
              */
             if (! $isOnline && ! in_array($this->website->website_status_id, [WebsiteStatus::OFFLINE, WebsiteStatus::PAUSED])) {
-                $this->website->update([
-                    'website_status_id' => WebsiteStatus::OFFLINE,
-                ]);
+                if ($averageUptimePercent < 100 && $averageUptimePercent > 0) {
+                    $this->website->update([
+                        'website_status_id' => WebsiteStatus::LIMITED,
+                    ]);
+                } else {
+                    $this->website->update([
+                        'website_status_id' => WebsiteStatus::OFFLINE,
+                    ]);
+                }
             }
 
             /**
              * If the website is online AND the website status is not online or paused.
              */
             if ($isOnline && ! in_array($this->website->website_status_id, [WebsiteStatus::ONLINE, WebsiteStatus::PAUSED])) {
-                $this->website->update([
-                    'website_status_id' => WebsiteStatus::ONLINE,
-                ]);
+                if ($averageUptimePercent < 100 && $averageUptimePercent > 0) {
+                    $this->website->update([
+                        'website_status_id' => WebsiteStatus::LIMITED,
+                    ]);
+                } else {
+                    $this->website->update([
+                        'website_status_id' => WebsiteStatus::ONLINE,
+                    ]);
+                }
             }
         } catch (\Exception $e) {
             $payload['message'] = $e->getMessage();

@@ -17,7 +17,7 @@ class MonitorType extends Model
 
     const DOMAIN_EXPIRATION = 5;
 
-    const DOMAIN_NAMESERVERS= 6;
+    const DOMAIN_NAMESERVERS = 6;
 
     const LIGHTHOUSE = 7;
 

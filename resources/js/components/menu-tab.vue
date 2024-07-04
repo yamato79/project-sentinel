@@ -46,7 +46,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { usePage, router, Link } from "@inertiajs/vue3";
 import Button from "./button.vue";
 import MenuTabItem from "./menu-tab-item.vue";

@@ -1,9 +1,9 @@
 <template>
-    <Line :data="parsedChartData" :options="parsedChartOptions" />
+    <Line :data="parsedChartData" :options="parsedChartOptions" :key="new Date()" />
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, defineProps, watch } from "vue";
 import { Line } from "vue-chartjs";
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale, Filler } from "chart.js";
 import "chartjs-adapter-moment";
@@ -17,15 +17,13 @@ const props = defineProps({
     chartOptions: {
         type: Object,
         required: false,
-        default: () => {}
+        default: () => ({})
     }
 });
 
-const parsedChartData = ref<any>({
-    ...props.chartData
-});
+const parsedChartData = computed(() => props.chartData);
 
-const parsedChartOptions = ref({
+const parsedChartOptions = computed(() => ({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -37,5 +35,11 @@ const parsedChartOptions = ref({
         }
     },
     ...props.chartOptions
+}));
+
+watch([parsedChartData, parsedChartOptions], () => {
+    // ...
+}, {
+    deep: true,
 });
 </script>

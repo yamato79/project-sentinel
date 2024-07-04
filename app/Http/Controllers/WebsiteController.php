@@ -9,11 +9,10 @@ use App\Http\Resources\MonitorLocationResource;
 use App\Http\Resources\WebsiteResource;
 use App\Models\MonitorLocation;
 use App\Models\Website;
-use App\Services\UptimeService\UptimeService;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
-use DB;
 
 class WebsiteController extends Controller
 {
@@ -72,26 +71,25 @@ class WebsiteController extends Controller
                 'address',
                 'website_status_id',
             ]));
-    
+
             $website->monitorLocations()
                 ->sync($request->validated()['monitor_location_ids']);
 
             $website->monitorLocations->each(function ($monitorLocation) use ($website) {
                 \App\Jobs\Monitors\CheckDomainExpiration::dispatch($website, $monitorLocation);
                 \App\Jobs\Monitors\CheckDomainNameservers::dispatch($website, $monitorLocation);
-                \App\Jobs\Monitors\CheckLighthouse::dispatch($website, $monitorLocation);
+                // \App\Jobs\Monitors\CheckLighthouse::dispatch($website, $monitorLocation);
                 \App\Jobs\Monitors\CheckResponseCode::dispatch($website, $monitorLocation);
                 \App\Jobs\Monitors\CheckResponseTime::dispatch($website, $monitorLocation);
                 \App\Jobs\Monitors\CheckSSLExpiration::dispatch($website, $monitorLocation);
                 \App\Jobs\Monitors\CheckSSLValidity::dispatch($website, $monitorLocation);
             });
-        
+
             DB::commit();
-            // all good
         } catch (\Exception $e) {
             DB::rollback();
 
-            logger()->error("Error creating new website.", [
+            logger()->error('Error creating new website.', [
                 'raw' => $e->getMessage(),
             ]);
 
@@ -171,13 +169,6 @@ class WebsiteController extends Controller
 
         return Inertia::render('panel/websites/edit/summary', [
             'website' => new WebsiteResource($website),
-            'uptimeCards' => UptimeService::getUptimeCards([
-                24 => 'Uptime (24H)',
-                168 => 'Uptime (7D)',
-                720 => 'Uptime (30D)',
-            ], $website->getKey()),
-            'uptimeTrend' => UptimeService::getUptimeTrendChartData(24, $website->getKey()),
-            'uptimeFeed' => UptimeService::getUptimeFeed(1, $website->getKey()),
             'tabs' => $this->getEditTabs($website),
             'breadcrumbs' => [
                 ['label' => 'Websites', 'href' => route('panel.websites.index')],
