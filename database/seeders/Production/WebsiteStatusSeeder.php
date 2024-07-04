@@ -16,7 +16,8 @@ class WebsiteStatusSeeder extends Seeder
             ['name' => 'Pending', 'slug' => 'default', 'description' => 'The website\'s status is currently not known.', 'color' => 'muted'],
             ['name' => 'Online',  'slug' => 'online',  'description' => 'The website is online.',                        'color' => 'success'],
             ['name' => 'Offline', 'slug' => 'offline', 'description' => 'The website is offline.',                       'color' => 'danger'],
-            ['name' => 'Paused',  'slug' => 'paused',  'description' => 'The website is not being monitored.',           'color' => 'warning'],
+            ['name' => 'Paused',  'slug' => 'paused',  'description' => 'The website is not being monitored.',           'color' => 'muted'],
+            ['name' => 'Limited', 'slug' => 'limited', 'description' => 'The website has limited connectivity.',         'color' => 'warning'],
         ])->each(function ($data) {
             WebsiteStatus::updateOrCreate([
                 'slug' => $data['slug'],

@@ -21,7 +21,7 @@ class MonitorTypeSeeder extends Seeder
             ['name' => 'Domain NS',     'slug' => 'domain-nameservers', 'description' => 'Monitors a website\'s domain nameservers.'],
             ['name' => 'Lighthouse',    'slug' => 'lighthouse',         'description' => 'Monitors a website\'s lighthouse scores.'],
         ])->each(function ($data) {
-            MonitorType::updateOrCreate([
+            MonitorType::firstOrCreate([
                 'slug' => $data['slug'],
             ], array_merge($data, [
                 // ...
