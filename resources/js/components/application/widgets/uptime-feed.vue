@@ -17,6 +17,7 @@ const props = defineProps({
 const isLoading = ref(true);
 const uptimeData = ref<{
     app_location: string;
+    app_locations: any[];
     avg_uptime_percent: number;
     minute: string;
     website_id: number;

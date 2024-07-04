@@ -18,8 +18,8 @@ const props = defineProps({
     },
 });
 
-const nameservers = ref([]);
-const isLoading = ref(true);
+const nameservers = ref<any>([]);
+const isLoading = ref<boolean>(true);
 
 const getData = async () => {
     try {
