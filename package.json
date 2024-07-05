@@ -3,6 +3,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
+        "tsc": "vue-tsc",
         "build": "vue-tsc && vite build",
         "build-ssr": "vue-tsc && vite build --ssr",
         "lint": "eslint 'resources/*/**/*.{js,ts,vue}'"
