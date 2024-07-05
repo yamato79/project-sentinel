@@ -66,7 +66,7 @@ class CheckResponseCode implements ShouldQueue
 
             $payload = array_merge(
                 $payload,
-                $response->json()
+                $response->json() ?? []
             );
 
             $isOnline = (

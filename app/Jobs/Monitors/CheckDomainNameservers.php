@@ -64,7 +64,7 @@ class CheckDomainNameservers implements ShouldQueue
 
             $payload = array_merge(
                 $payload,
-                $response->json()
+                $response->json() ?? []
             );
         } catch (\Exception $e) {
             $payload['message'] = $e->getMessage();
