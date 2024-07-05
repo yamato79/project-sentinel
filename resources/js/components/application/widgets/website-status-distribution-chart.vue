@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import ChartDoughnut from "@/components/charts/chart-doughnut.vue";
+import ChartBar from "@/components/charts/chart-bar.vue";
 
-const chartOptions = ref<any>({});
+const chartOptions = ref<any>({
+    plugins: {
+        legend: {
+            display: false
+        },
+        tooltip: {
+            displayColors: false
+        }
+    },
+});
 
 const chartData = ref<any>({
     datasets: []
@@ -10,7 +19,7 @@ const chartData = ref<any>({
 </script>
 
 <template>
-    <ChartDoughnut 
+    <ChartBar 
         :chart-options="chartOptions"
         :chart-data="chartData"
     />

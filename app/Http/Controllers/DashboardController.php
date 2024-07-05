@@ -41,22 +41,13 @@ class DashboardController extends Controller
 
         // Define the colors for each status
         $colors = [
-            'limited' => '#ffcd56',
-            'paused' => '#c9cbcf',
-            'online' => '#10b981', // Emerald 500
-            'offline' => '#f43f5e', // Rose 500
-            'default' => '#c9cbcf',
+            'limited' => 'rgba(255, 205, 86, 0.5)',
+            'paused' => 'rgba(201, 203, 207, 0.5)',
+            'online' => 'rgba(16, 185, 129, 0.5)', // Emerald 500
+            'offline' => 'rgba(244, 63, 94, 0.5)', // Rose 500
+            'default' => 'rgba(201, 203, 207, 0.5)',
         ];
-
-        $chartColors = [
-            'AF' => 'rgb(255, 99, 132)',
-            'AN' => 'rgb(255, 159, 64)',
-            'AS' => 'rgb(255, 205, 86)',
-            'EU' => 'rgb(75, 192, 192)',
-            'NA' => 'rgb(54, 162, 235)',
-            'OC' => 'rgb(153, 102, 255)',
-            'SA' => 'rgb(201, 203, 207)',
-        ];
+        
 
         // Map the data for Chart.js
         $chartData = [

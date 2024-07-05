@@ -65,7 +65,7 @@ class UptimeTrendWidget
             'OC' => 'rgb(153, 102, 255)',
             'SA' => 'rgb(201, 203, 207)',
         ];
-
+        
         foreach ($this->getUptimeForPeriod(now()->subHours($this->request->hours), now()) as $monitorLocationSlug => $uptimeData) {
             $monitorLocation = MonitorLocation::where('slug', $monitorLocationSlug)->firstOrFail();
 

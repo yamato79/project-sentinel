@@ -121,7 +121,7 @@ onUnmounted(() => {
     <Card>
         <div class="flex flex-col justify-center p-4 sm:p-6">
             <dt>
-                <div class="absolute rounded-md bg-gray-700 p-4">
+                <div class="absolute rounded bg-gray-700 p-4">
                     <div class="p-0.5">
                         <span class="relative flex h-3 w-3">
                             <span :class="[pingClasses, 'animate-ping absolute inline-flex h-full w-full rounded-full opacity-75']"></span>

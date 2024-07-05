@@ -15,6 +15,7 @@ const props = defineProps({
 });
 
 const isLoading = ref(true);
+
 const uptimeData = ref<{
     app_location: string;
     app_locations: any[];
@@ -28,33 +29,24 @@ const intervalId = ref<any>(null);
 
 const getData = async () => {
     try {
-        const params = {
-            website_id: props.websiteId,
+        const response = await fetch(route("api.widgets.uptime-feed", {
+            website_id: props.websiteId || undefined,
             minutes: props.minutes,
-        } as { [key: string]: string | number };
-
-        if (props.websiteId) {
-            params.website = props.websiteId;
-        } else {
-            delete params.website;
-        }
-
-        const response = await fetch(route("api.widgets.uptime-feed", params));
+        }));
 
         if (!response.ok) {
             throw new Error("HTTP error! Status: " + response.status);
         }
 
-        const { data } = await response.json();
-
-        if (data) {
+        setTimeout(async () => {
+            const { data } = await response.json();
             uptimeData.value = data;
-        }
+            isLoading.value = false;
+        }, 1000);
     } catch (error: any) {
         console.error(error);
+        isLoading.value = false;
     }
-
-    isLoading.value = false;
 };
 
 const startReloading = () => {
@@ -92,21 +84,25 @@ const getClass = (uptime: number) => {
 </script>
 
 <template>
-    <div>
-        <div class="w-full flex items-center gap-[2px]">
-            <template v-if="isLoading">
-                <div class="w-full h-full flex items-center justify-center py-2">
-                    <Spinner size="xs"/>
-                </div>
-            </template>
+    <div class="grid grid-cols-1 gap-4">
+        <p class="truncate text-sm font-medium text-gray-600">
+            Uptime Feed ({{ (props.minutes / 60) }}H)
+        </p>
 
-            <template v-else>
+        <template v-if="isLoading">
+            <div class="w-full h-full flex items-center justify-center py-2">
+                <Spinner size="xs"/>
+            </div>
+        </template>
+        
+        <template v-else>
+            <div class="w-full flex items-center gap-[2px]">
                 <template v-for="(uptimeTick, uptimeTickIndex) in uptimeData" :key="'uptimeTick_' + uptimeTickIndex">
                     <div :class="[
                         getClass(uptimeTick.avg_uptime_percent), 
-                        'w-full flex-1 group hover:opacity-80 relative h-8 bg-gray-200 rounded-sm cursor-pointer'
+                        'w-full flex-1 group hover:opacity-80 relative h-8 bg-gray-200 rounded-sm cursor-pointer z-50'
                     ]">
-                        <span class="group-hover:opacity-100 transition-opacity bg-gray-900 px-2 py-1 text-xs text-gray-100 rounded-md absolute left-1/2 -translate-x-1/2 translate-y-6 opacity-0 m-4 mx-auto whitespace-nowrap pointer-events-none z-50">
+                        <span class="group-hover:opacity-100 transition-opacity bg-gray-900 px-2 py-1 text-xs text-gray-100 rounded absolute left-1/2 -translate-x-1/2 translate-y-6 opacity-0 m-4 mx-auto whitespace-nowrap pointer-events-none" style="z-index: 99999">
                             <span class="font-bold text-white border-b border-gray-300">
                                 {{ uptimeTick.minute }}
                             </span>
@@ -130,7 +126,7 @@ const getClass = (uptime: number) => {
                         </span>
                     </div>
                 </template>
-            </template>
-        </div>
+            </div>
+        </template>
     </div>
 </template>

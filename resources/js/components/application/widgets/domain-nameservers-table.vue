@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Badge from "@/components/badge.vue";
+import ContentBody from "@/components/content-body.vue";
 import Paragraph from "@/components/paragraph.vue";
 import Spinner from "@/components/spinner.vue";
 import TableBody from "@/components/table/table-body.vue";
@@ -13,44 +14,52 @@ import Table from "@/components/table/table.vue";
 const props = defineProps({
     websiteId: {
         type: Number,
+        required: true,
+    },
+    days: {
+        type: Number,
         required: false,
-        default: () => null
+        default: () => 7,
     },
 });
 
-const nameservers = ref<any>([]);
-const isLoading = ref<boolean>(true);
+const isLoading = ref(true);
 
-const getData = async () => {
+const nameservers = ref<any>([
+    // ...
+]);
+
+(async () => {
     try {
-        const params = {
+        const response = await fetch(route("api.widgets.domain-nameservers-table", {
             website_id: props.websiteId,
-        } as { [key: string]: string | number };
-
-        const response = await fetch(route("api.widgets.domain-nameservers-table", params));
+            days: props.days,
+        }));
 
         if (!response.ok) {
             throw new Error("HTTP error! Status: " + response.status);
         }
 
-        const { data } = await response.json();
-
-        if (data) {
-            console.log(data);
+        setTimeout(async () => {
+            const { data } = await response.json();
             nameservers.value = data;
-        }
+            isLoading.value = false;
+        }, 1000);
     } catch (error: any) {
         console.error(error);
+        isLoading.value = false;
     }
-
-    isLoading.value = false;
-};
-
-getData();
+})();
 </script>
 
 <template>
-    <Table>
+    <ContentBody>
+        <p class="truncate text-sm font-medium text-gray-600">
+            Domain Nameservers History ({{ days }}D)
+        </p>
+    </ContentBody>
+
+    <Table class="rounded-none border-t border-gray-200">
         <TableHead>
             <TableRow>
                 <TableHeader>Location</TableHeader>

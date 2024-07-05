@@ -4,7 +4,6 @@ import PanelLayout from "@/components/layouts/panel/index.vue";
 import Card from "@/components/card.vue";
 import Container from "@/components/container.vue";
 import ContentBody from "@/components/content-body.vue";
-import Heading from "@/components/heading.vue";
 import MountedTeleport from "@/components/mounted-teleport.vue";
 import Paragraph from "@/components/paragraph.vue";
 import SectionGroup from "@/components/section-group.vue";
@@ -50,8 +49,6 @@ const props = defineProps({
 
         <Section>
             <SectionGroup>
-                <Heading :size="4">Uptime Summary</Heading>
-
                 <dl class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     <UptimeCard :title="'Uptime (24H)'" :hours="24" />
                     <UptimeCard :title="'Uptime (7D)'" :hours="(24 * 7)" />
@@ -61,21 +58,25 @@ const props = defineProps({
 
             <div class="grid grid-cols-6 gap-6">
                 <SectionGroup class="col-span-full md:col-span-full xl:col-span-4">
-                    <Heading :size="4">Uptime Trend (24H)</Heading>
-
                     <Card>
-                        <ContentBody class="h-96">
+                        <ContentBody>
                             <UptimeTrend :hours="24" />
                         </ContentBody>
                     </Card>
                 </SectionGroup>
                     
                 <SectionGroup class="col-span-full md:col-span-3 xl:col-span-2">
-                    <Heading :size="4">Status Distribution</Heading>
-
                     <Card>
-                        <ContentBody class="h-96">
-                            <WebsiteStatusDistributionChart :chart-data="props.websiteStatusDistribution" />
+                        <ContentBody>
+                            <div class="grid grid-cols-1 gap-[2px]">
+                                <p class="truncate text-sm font-medium text-gray-600 mb-4">
+                                    Website Status Distribution
+                                </p>
+
+                                <div class="flex items-center justify-center max-h-[16rem]">
+                                    <WebsiteStatusDistributionChart :chart-data="props.websiteStatusDistribution" />
+                                </div>
+                            </div>
                         </ContentBody>
                     </Card>
                 </SectionGroup>

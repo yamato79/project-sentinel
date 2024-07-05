@@ -7,7 +7,6 @@ import WebsiteEditIndexLayout from "./index.vue";
 import Badge from "@/components/badge.vue";
 import Card from "@/components/card.vue";
 import ContentBody from "@/components/content-body.vue";
-import Heading from "@/components/heading.vue";
 import MountedTeleport from "@/components/mounted-teleport.vue";
 import Paragraph from "@/components/paragraph.vue";
 import SectionGroup from "@/components/section-group.vue";
@@ -67,33 +66,22 @@ const props = defineProps({
         <div class="col-span-full sm:col-span-4 grid grid-cols-1 gap-10">
             <div class="grid grid-cols-6 gap-6">
                 <div class="col-span-full sm:col-span-3 xl:col-span-2">
-                    <div class="grid grid-cols-1 gap-8">
+                    <div class="grid grid-cols-1 gap-4">
                         <SectionGroup>
-                            <Heading :size="4">Uptime Summary</Heading>
-
                             <dl class="grid grid-cols-1 gap-4">
                                 <UptimeCard :website-id="props.website.data.website_id" :title="'Uptime (24H)'" :hours="24" />
                                 <UptimeCard :website-id="props.website.data.website_id" :title="'Uptime (7D)'"  :hours="(24 * 7)" />
                                 <UptimeCard :website-id="props.website.data.website_id" :title="'Uptime (30D)'" :hours="(24 * 30)" />
-                            </dl>
-                        </SectionGroup>
-
-                        <SectionGroup>
-                            <Heading :size="4">Domain Summary</Heading>
-
-                            <div class="grid grid-cols-1 gap-4">
                                 <SSLStatusCard :website-id="props.website.data.website_id" />
                                 <DomainStatusCard :website-id="props.website.data.website_id" />
-                            </div>
+                            </dl>
                         </SectionGroup>
                     </div>
                 </div>
 
                 <div class="col-span-full sm:col-span-3 xl:col-span-4">
-                    <div class="grid grid-cols-1 gap-8">
+                    <div class="grid grid-cols-1 gap-4">
                         <SectionGroup>
-                            <Heading :size="4">Uptime Feed (1H)</Heading>
-
                             <Card>
                                 <ContentBody>
                                     <UptimeFeed :website-id="props.website.data.website_id" :minutes="60" />
@@ -102,8 +90,6 @@ const props = defineProps({
                         </SectionGroup>
 
                         <SectionGroup>
-                            <Heading :size="4">Uptime Trend (24H)</Heading>
-
                             <Card>
                                 <ContentBody>
                                     <UptimeTrend :website-id="props.website.data.website_id" :hours="24" />
@@ -112,8 +98,6 @@ const props = defineProps({
                         </SectionGroup>
 
                         <SectionGroup>
-                            <Heading :size="4">Response Time Trend (24H)</Heading>
-
                             <Card>
                                 <ContentBody>
                                     <ResponseTimeTrend :website-id="props.website.data.website_id" :hours="24" />
@@ -122,9 +106,7 @@ const props = defineProps({
                         </SectionGroup>
 
                         <SectionGroup>
-                            <Heading :size="4">Domain Nameservers History (7D)</Heading>
-
-                            <Card>
+                            <Card class="overflow-hidden">
                                 <DomainNameserversTable :website-id="props.website.data.website_id" />
                             </Card>
                         </SectionGroup>

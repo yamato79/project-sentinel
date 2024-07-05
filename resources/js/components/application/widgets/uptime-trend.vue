@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import ChartLine from "@/components/charts/chart-line.vue";
+import Spinner from "@/components/spinner.vue";
 
 const props = defineProps({
     websiteId: {
@@ -13,6 +14,8 @@ const props = defineProps({
         required: true,
     },
 });
+
+const isLoading = ref(true);
 
 const chartOptions = ref({
     plugins: {
@@ -46,47 +49,51 @@ const chartData = ref({
     datasets: [],
 });
 
-const isLoading = ref(true);
+(async () => {
+    isLoading.value = true;
 
-const getData = async () => {
     try {
-        const params = {
-            website_id: props.websiteId,
+        const response = await fetch(route("api.widgets.uptime-trend", {
+            website_id: props.websiteId || undefined,
             hours: props.hours,
-        } as { [key: string]: string | number };
-
-        if (props.websiteId) {
-            params.website = props.websiteId;
-        } else {
-            delete params.website;
-        }
-
-        const response = await fetch(route("api.widgets.uptime-trend", params));
+        }));
 
         if (!response.ok) {
             throw new Error("HTTP error! Status: " + response.status);
         }
 
-        const { data } = await response.json();
-
-        if (data) {
-            chartData.value.datasets = data.datasets;
-        }
+        setTimeout(async () => {
+            const { data } = await response.json();
+            chartData.value.datasets = data.datasets || [];
+            isLoading.value = false;
+        }, 1000);
     } catch (error: any) {
         console.error(error);
+        isLoading.value = false;
     }
-
-    isLoading.value = false;
-};
-
-getData();
+})();
 </script>
 
 <template>
-    <ChartLine
-        v-if="!isLoading"
-        :chart-options="chartOptions"
-        :chart-data="chartData"
-        class="h-auto sm:h-48"
-    />
+    <div class="grid grid-cols-1 gap-[2px]">
+        <p class="truncate text-sm font-medium text-gray-600">
+            Uptime Trend ({{ props.hours }}H)
+        </p>
+
+        <template v-if="isLoading">
+            <div class="w-full h-auto sm:h-48 flex items-center justify-center">
+                <Spinner size="xs" />
+            </div>
+        </template>
+
+        <template v-else>
+            <div>
+                <ChartLine
+                    :chart-options="chartOptions"
+                    :chart-data="chartData"
+                    class="h-auto sm:h-48"
+                />
+            </div>
+        </template>
+    </div>
 </template>

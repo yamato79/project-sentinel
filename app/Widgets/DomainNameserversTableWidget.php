@@ -28,6 +28,7 @@ class DomainNameserversTableWidget
     {
         $validator = Validator::make($this->request->all(), [
             'website_id' => 'sometimes|integer|exists:websites,website_id',
+            'days' => 'required|integer|min:1|max:30'
         ]);
 
         if ($validator->fails()) {
@@ -39,7 +40,7 @@ class DomainNameserversTableWidget
 
         $result = DB::table('v_website_domain_nameservers_history')
             ->where('website_id', $this->request->get('website_id'))
-            ->wherebetween('created_at', [now()->startOfMinute()->subDays(7), now()])
+            ->wherebetween('created_at', [now()->startOfMinute()->subDays($this->request->get('days')), now()])
             ->orderBy('created_at', 'DESC')
             ->get();
 
