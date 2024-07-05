@@ -1,5 +1,5 @@
 <template>
-    <Line :data="parsedChartData" :options="parsedChartOptions" :key="new Date()" />
+    <Line :data="parsedChartData" :options="parsedChartOptions" :key="+(new Date())" />
 </template>
 
 <script setup lang="ts">
@@ -21,9 +21,9 @@ const props = defineProps({
     }
 });
 
-const parsedChartData = computed(() => props.chartData);
+const parsedChartData: any = computed(() => props.chartData);
 
-const parsedChartOptions = computed(() => ({
+const parsedChartOptions: any = computed(() => ({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
