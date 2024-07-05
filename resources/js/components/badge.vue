@@ -61,5 +61,5 @@ const containerSizes: { [key: string]: string } = {
 };
 
 const iconClasses = computed(() => `${iconColors[props.color]} ${iconSizes[props.size]}`);
-const containerClasses = computed(() => `inline-flex items-center rounded-md ${containerColors[props.color]} ${containerSizes[props.size]}`);
+const containerClasses = computed(() => `inline-flex items-center rounded ${containerColors[props.color]} ${containerSizes[props.size]}`);
 </script>

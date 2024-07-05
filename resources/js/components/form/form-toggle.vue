@@ -1,5 +1,5 @@
 <template>
-    <SwitchGroup as="div" :class="[($slots.default ? 'bg-gray-50 px-4 py-2.5' : ''), (props.disabled ? 'opacity-50' : ''), 'flex items-center justify-between  rounded-md']">
+    <SwitchGroup as="div" :class="[($slots.default ? 'bg-gray-50 px-4 py-2.5' : ''), (props.disabled ? 'opacity-50' : ''), 'flex items-center justify-between  rounded']">
         <span class="flex flex-grow flex-col">
             <SwitchDescription as="span" class="text-sm text-gray-500 line-clamp-1">
                 <slot></slot>

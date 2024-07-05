@@ -37,7 +37,7 @@ const props = defineProps({
     },
 });
 
-const baseClasses: String = "v-button flex w-full items-center justify-center gap-2 rounded-md border capitalize transition-all ease-in-out duration-300";
+const baseClasses: String = "v-button flex w-full items-center justify-center gap-2 rounded border capitalize transition-all ease-in-out duration-300";
 
 const colors: { [key: string]: string } = {
     default: "bg-gray-700 hover:bg-gray-800 border-gray-700 hover:border-gray-800 text-gray-50",
@@ -70,7 +70,7 @@ const classes = computed(() => `${baseClasses} ${colors[props.color]} ${sizes[pr
                     </template>
 
                     <template v-else>
-                        <div>
+                        <div v-if="$slots.icon">
                             <slot name="icon"></slot>
                         </div>
                     </template>
@@ -87,7 +87,7 @@ const classes = computed(() => `${baseClasses} ${colors[props.color]} ${sizes[pr
                 </template>
 
                 <template v-else>
-                    <div>
+                    <div v-if="$slots.icon">
                         <slot name="icon"></slot>
                     </div>
                 </template>

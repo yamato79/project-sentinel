@@ -1,12 +1,12 @@
 <template>
-    <Bar :data="parsedChartData" :options="parsedChartOptions" />
+    <PolarArea :data="parsedChartData" :options="parsedChartOptions" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { Bar } from "vue-chartjs";
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js";
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+import { PolarArea } from "vue-chartjs";
+import { Chart as ChartJS, Title, Tooltip, Legend, RadialLinearScale, ArcElement, PointElement } from "chart.js";
+ChartJS.register(Title, Tooltip, Legend, RadialLinearScale, ArcElement, PointElement);
 
 const props = defineProps({
     chartData: {
