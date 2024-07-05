@@ -45,6 +45,7 @@ class MonitorLocation extends Model
     protected $fillable = [
         'name',
         'slug',
+        'color',
         'description',
         'agent_url',
         'is_active',
