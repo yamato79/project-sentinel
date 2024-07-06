@@ -1,10 +1,7 @@
 <template>
     <Link :href="props.href" :class="linkClasses(isActive)" v-bind="$attrs">
+        <slot name="icon"></slot>
         <slot></slot>
-
-        <template v-if="isActive">
-            <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-0.5 bg-gray-700"></span>
-        </template>
     </Link>
 </template>
 
@@ -32,5 +29,8 @@ const isActive = computed(() => {
     return (currentUrl.pathname === linkUrl.pathname);
 });
 
-const linkClasses = (isActive: boolean) => [isActive ? "text-gray-900 bg-white" : "text-gray-500 hover:text-gray-700 bg-white", "max-w-[20%] group relative min-w-0 flex-1 overflow-hidden px-4 py-2.5 text-center text-sm font-medium focus:z-10 font-medium whitespace-nowrap transition-all ease-in-out duration-300"];
+const linkClasses = (isActive: boolean) => [
+    isActive ? "border-primary-500 text-primary-600" : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700", 
+    "flex items-center gap-2 whitespace-nowrap border-b-2 py-4 text-sm font-medium transition-all ease-in-out duration-300"
+];
 </script>

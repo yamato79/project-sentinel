@@ -16,7 +16,7 @@
 
             <label for="tabs" class="sr-only">Select a tab</label>
             
-            <select class="block w-full w-full block text-sm leading-6 rounded-md text-gray-700 border-gray-200 focus:border-primary-600 focus:ring-primary-600 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed" @change="onSelectChange($event)">
+            <select class="block w-full w-full block text-sm leading-6 rounded text-gray-700 border-gray-200 focus:border-primary-600 focus:ring-primary-600 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed" @change="onSelectChange($event)">
                 <template v-for="(menuItem, menuItemIndex) in props.menuItems" :key="'menuItem_' + menuItemIndex">
                     <option :selected="isActive(menuItem.href)" :value="menuItem.href">{{ menuItem.label }}</option>
                 </template>
@@ -24,23 +24,22 @@
         </div>
 
         <div class="hidden sm:block">
-            <nav class="isolate flex divide-x divide-gray-200 bg-white shadow rounded-md overflow-hidden border" aria-label="Tabs">
-                <template v-if="props.backLink">
-                    <Link
-                        :href="props.backLink"
-                        class="text-gray-500 hover:text-gray-700 bg-white max-w-[25%] group relative min-w-0 overflow-hidden px-6 py-2.5 text-center text-sm font-medium focus:z-10 font-medium whitespace-nowrap transition-all ease-in-out duration-300">
-                        <div class="py-0.25">
-                            <FontAwesomeIcon :icon="'fa-solid fa-long-arrow-left text-sm'" />
-                        </div>
-                    </Link>
-                </template>
+            <div class="border-b-2 border-gray-200">
+                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                    <template v-if="props.backLink">
+                        <MenuTabItem :href="props.backLink">
+                            <FontAwesomeIcon icon="fa-solid fa-long-arrow-left text-sm" />
+                            Back
+                        </MenuTabItem>
+                    </template>
 
-                <template v-for="(menuItem, menuItemIndex) in props.menuItems" :key="'menuItem_' + menuItemIndex">
-                    <MenuTabItem :href="menuItem.href">
-                        {{ menuItem.label }}
-                    </MenuTabItem>
-                </template>
-            </nav>
+                    <template v-for="(menuItem, menuItemIndex) in props.menuItems" :key="'menuItem_' + menuItemIndex">
+                        <MenuTabItem :href="menuItem.href">
+                            {{ menuItem.label }}
+                        </MenuTabItem>
+                    </template>
+                </nav>
+            </div>
         </div>
     </div>
 </template>
