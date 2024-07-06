@@ -11,6 +11,14 @@ const chartOptions = ref<any>({
             displayColors: false
         }
     },
+    scales: {
+        y: {
+            beginAtZero: true,
+            ticks: {
+                stepSize: 1
+            }
+        }
+    },
 });
 
 const chartData = ref<any>({

@@ -60,7 +60,7 @@ const clearFilterForm = () => {
         <div class="w-full flex flex-col-reverse gap-4 sm:flex-row items-center justify-between">
             <Form class="w-full sm:w-auto" @submit.prevent="submitFilterForm">
                 <div class="w-full flex items-center justify-between">
-                    <FormGroup class="w-full sm:w-auto">
+                    <FormGroup class="w-full sm:w-auto border-r border-gray-300">
                         <FormInput type="text" class="rounded-r-none" placeholder="Search ..." v-model="filterForm.searchQuery" autofocus />
                     </FormGroup>
 
@@ -74,14 +74,10 @@ const clearFilterForm = () => {
                         </div>
                     </template>
 
-                    <Button type="submit" class="rounded-l-none">
+                    <Button type="submit" color="muted" class="rounded-l-none">
                         <template #icon>
                             <FontAwesomeIcon icon="fa-solid fa-search" />
                         </template>
-
-                        <span class="hidden sm:block">
-                            Search
-                        </span>
                     </Button>
                 </div>
             </Form>

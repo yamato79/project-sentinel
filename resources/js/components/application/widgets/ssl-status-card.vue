@@ -63,7 +63,7 @@ getData();
     <Card>
         <div class="flex flex-col justify-center p-4 sm:p-6">
             <dt>
-                <div :class="['absolute rounded bg-gray-700 p-3']">
+                <div :class="['absolute rounded bg-primary-900 p-3']">
                     <div class="w-6 h-6 flex items-center justify-center text-white text-lg">
                         <FontAwesomeIcon icon="fa-solid fa-times" class="text-gray-500" v-if="isValid === null || isLoading" />
                         <FontAwesomeIcon icon="fa-solid fa-check" class="text-success-500" v-else-if="isValid" />

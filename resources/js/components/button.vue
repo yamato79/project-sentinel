@@ -41,7 +41,7 @@ const baseClasses: String = "v-button flex w-full items-center justify-center ga
 
 const colors: { [key: string]: string } = {
     default: "bg-gray-700 hover:bg-gray-800 border-gray-700 hover:border-gray-800 text-gray-50",
-    muted: "bg-gray-200 hover:bg-gray-300 text-gray-600 border-gray-200 hover:border-gray-300",
+    muted: "bg-gray-300 hover:bg-gray-400 text-gray-600 border-gray-300 hover:border-gray-400",
     primary: "bg-primary-600 hover:bg-primary-500 border-primary-600 hover:border-primary-500 text-gray-50",
     secondary: "",
     success: "bg-success-600 hover:bg-success-500 border-success-600 hover:border-success-500 text-gray-50",
