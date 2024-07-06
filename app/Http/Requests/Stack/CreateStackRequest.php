@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Stack;
 
+use App\Models\Stack;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -12,7 +13,7 @@ class CreateStackRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('create', $this->route('stack'));
+        return Gate::allows('create', new Stack());
     }
 
     /**
