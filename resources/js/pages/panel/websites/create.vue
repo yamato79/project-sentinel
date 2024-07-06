@@ -42,6 +42,7 @@ const form = useForm({
 
 const submitForm = () => {
     form.post(route("panel.websites.store"), {
+        preserveScroll: true,
         onSuccess: (response) => {
             console.log("TODO: Add success toast notification.", response);
         },

@@ -59,6 +59,7 @@ const formsProcessing = computed(() => (
 
 const submitForm = () => {
     form.put(route("panel.stacks.update", { stack: props.stack.data.stack_id }), {
+        preserveScroll: true,
         onSuccess: (response) => {
             console.log("TODO: Add success toast notification.", response);
         },
@@ -78,6 +79,7 @@ const submitDeleteForm = () => {
     }
 
     deleteForm.delete(route("panel.stacks.destroy", { stack: props.stack.data.stack_id }), {
+        preserveScroll: true,
         onSuccess: () => {
             console.log("TODO: Add success toast notification.");
         },
@@ -97,6 +99,7 @@ const submitLeaveForm = () => {
     }
 
     leaveForm.delete(route("panel.stacks.users.leave", { stack: props.stack.data.stack_id }), {
+        preserveScroll: true,
         onSuccess: () => {
             console.log("TODO: Add success toast notification.");
         },

@@ -32,6 +32,7 @@ const form = useForm({
 
 const submitForm = () => {
     form.post(route("panel.stacks.store"), {
+        preserveScroll: true,
         onSuccess: (response) => {
             console.log("TODO: Add success toast notification.", response);
             console.log("TODO: Add redirect to created stack.");

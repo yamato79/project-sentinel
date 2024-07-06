@@ -25,6 +25,7 @@ const form = useForm({
 
 const submitForm = () => {
     form.patch(route("panel.profile.update"), {
+        preserveScroll: true,
         onSuccess: () => {
             console.log("TODO: Add success toast notification.");
         },
