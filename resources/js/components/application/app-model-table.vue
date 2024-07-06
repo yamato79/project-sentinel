@@ -141,14 +141,14 @@ const clearFilterForm = () => {
                                 </div>
 
                                 <div class="w-full md:w-auto grid grid-cols-2 sm:flex items-end justify-end gap-2">
-                                    <Button :href="links.prev" color="muted" size="sm" :disabled="!links.prev">
+                                    <Button :href="links.prev" color="muted" size="sm" :disabled="!links.prev" preserve-scroll>
                                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path fill-rule="evenodd" d="M18 10a.75.75 0 01-.75.75H4.66l2.1 1.95a.75.75 0 11-1.02 1.1l-3.5-3.25a.75.75 0 010-1.1l3.5-3.25a.75.75 0 111.02 1.1l-2.1 1.95h12.59A.75.75 0 0118 10z" clip-rule="evenodd"></path>
                                         </svg>
                                         Previous
                                     </Button>
 
-                                    <Button :href="links.next" color="muted" size="sm" :disabled="!links.next">
+                                    <Button :href="links.next" color="muted" size="sm" :disabled="!links.next" preserve-scroll>
                                         Next
                                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path fill-rule="evenodd" d="M2 10a.75.75 0 01.75-.75h12.59l-2.1-1.95a.75.75 0 111.02-1.1l3.5 3.25a.75.75 0 010 1.1l-3.5 3.25a.75.75 0 11-1.02-1.1l2.1-1.95H2.75A.75.75 0 012 10z" clip-rule="evenodd"></path>
