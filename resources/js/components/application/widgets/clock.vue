@@ -22,5 +22,5 @@ onMounted(() => {
 </script>
 
 <template>
-    <Paragraph size="sm" color="muted">{{ currentTime.toLocaleTimeString('en-US', { timeZone: 'Asia/Manila' }) }}</Paragraph>
+    <Paragraph size="sm" color="muted" class="font-mono">{{ currentTime.toLocaleTimeString('en-US', { timeZone: 'Asia/Manila' }) }}</Paragraph>
 </template>
