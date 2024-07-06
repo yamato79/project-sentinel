@@ -55,16 +55,6 @@ class UptimeTrendWidget
             'labels' => [],
             'datasets' => [],
         ];
-
-        $chartColors = [
-            'AF' => 'rgb(255, 99, 132)',
-            'AN' => 'rgb(255, 159, 64)',
-            'AS' => 'rgb(255, 205, 86)',
-            'EU' => 'rgb(75, 192, 192)',
-            'NA' => 'rgb(54, 162, 235)',
-            'OC' => 'rgb(153, 102, 255)',
-            'SA' => 'rgb(201, 203, 207)',
-        ];
         
         foreach ($this->getUptimeForPeriod(now()->subHours($this->request->hours), now()) as $monitorLocationSlug => $uptimeData) {
             $monitorLocation = MonitorLocation::where('slug', $monitorLocationSlug)->firstOrFail();
@@ -84,8 +74,8 @@ class UptimeTrendWidget
                 $chartData['datasets'][] = [
                     'label' => $monitorLocation->name,
                     'data' => $uptimeData->map(fn ($row) => ['x' => $row['hour'], 'y' => (int) $row['avg_uptime_percent']]),
-                    'backgroundColor' => $chartColors[$monitorLocationSlug],
-                    'borderColor' => $chartColors[$monitorLocationSlug],
+                    'backgroundColor' => $monitorLocation->color_code,
+                    'borderColor' => $monitorLocation->color_code,
                     'fill' => false,
                 ];
 
@@ -95,8 +85,8 @@ class UptimeTrendWidget
             $chartData['datasets'][] = [
                 'label' => $monitorLocation->name,
                 'data' => $uptimeData->map(fn ($row) => ['x' => $row->hour, 'y' => (int) $row->avg_uptime_percent]),
-                'backgroundColor' => $chartColors[$monitorLocationSlug],
-                'borderColor' => $chartColors[$monitorLocationSlug],
+                'backgroundColor' => $monitorLocation->color_code,
+                'borderColor' => $monitorLocation->color_code,
                 'fill' => false,
             ];
         }

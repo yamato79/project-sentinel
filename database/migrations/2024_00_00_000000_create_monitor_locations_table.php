@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('monitor_location_id');
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('color')->default('#334154');
+            $table->string('color_code')->default('#334154');
             $table->string('description')->nullable();
             $table->string('agent_url');
             $table->boolean('is_active')->default(false);

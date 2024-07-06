@@ -41,11 +41,11 @@ class DashboardController extends Controller
 
         // Define the colors for each status
         $colors = [
-            'limited' => 'rgba(255, 205, 86, 0.5)',
-            'paused' => 'rgba(201, 203, 207, 0.5)',
-            'online' => 'rgba(16, 185, 129, 0.5)', // Emerald 500
-            'offline' => 'rgba(244, 63, 94, 0.5)', // Rose 500
-            'default' => 'rgba(201, 203, 207, 0.5)',
+            'limited' => 'rgba(255, 205, 86, 1)',
+            'paused' => 'rgba(201, 203, 207, 1)',
+            'online' => 'rgba(16, 185, 129, 1)', // Emerald 500
+            'offline' => 'rgba(244, 63, 94, 1)', // Rose 500
+            'default' => 'rgba(201, 203, 207, 1)',
         ];
         
 

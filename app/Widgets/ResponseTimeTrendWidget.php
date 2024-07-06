@@ -54,24 +54,14 @@ class ResponseTimeTrendWidget
             'datasets' => [],
         ];
 
-        $chartColors = [
-            'AF' => 'rgb(255, 99, 132)',
-            'AN' => 'rgb(255, 159, 64)',
-            'AS' => 'rgb(255, 205, 86)',
-            'EU' => 'rgb(75, 192, 192)',
-            'NA' => 'rgb(54, 162, 235)',
-            'OC' => 'rgb(153, 102, 255)',
-            'SA' => 'rgb(201, 203, 207)',
-        ];
-
         foreach ($this->getResponseTimeForPeriod(now()->subHours($this->request->hours), now()) as $monitorLocationSlug => $responseTimeData) {
             $monitorLocation = MonitorLocation::where('slug', $monitorLocationSlug)->firstOrFail();
 
             $chartData['datasets'][] = [
                 'label' => $monitorLocation->name,
                 'data' => $responseTimeData->map(fn ($row) => ['x' => $row->hour, 'y' => (int) $row->avg_response_time_ms]),
-                'backgroundColor' => $chartColors[$monitorLocationSlug],
-                'borderColor' => $chartColors[$monitorLocationSlug],
+                'backgroundColor' => $monitorLocation->color_code,
+                'borderColor' => $monitorLocation->color_code,
                 'fill' => false,
             ];
         }
