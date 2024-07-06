@@ -50,7 +50,7 @@ const colors: { [key: string]: string } = {
 };
 
 const sizes: { [key: string]: string } = {
-    xs: "",
+    xs: "px-2.5 py-1 text-sm font-semibold leading-6",
     sm: "px-4 py-1.5 text-sm font-semibold leading-6",
     md: "px-4 py-2 text-sm font-semibold leading-6",
     lg: "",
