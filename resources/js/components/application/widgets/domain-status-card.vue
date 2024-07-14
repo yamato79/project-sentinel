@@ -103,11 +103,11 @@ getData();
                         </template>
 
                         <template v-else-if="expiresIn > 0">
-                            Expires in {{ expiresIn }} days
+                            Expires in {{ parseInt(expiresIn) }} days
                         </template>
 
                         <template v-else-if="expiresIn < 0">
-                            Expired {{ expiresIn * -1 }} days ago
+                            Expired {{ parseInt(expiresIn) * -1 }} days ago
                         </template>
                     </p>
                 </template>

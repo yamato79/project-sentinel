@@ -46,10 +46,9 @@ class DomainStatusWidget
         $isValid = ($expiresIn ? ($expiresIn->expires_in > 0) : null);
 
         return [
-            'data' => [
+            'data' => array_merge([
                 'is_valid' => $isValid,
-                'expires_in' => $expiresIn,
-            ],
+            ], collect($expiresIn)->toArray()),
             'errors' => [],
         ];
     }

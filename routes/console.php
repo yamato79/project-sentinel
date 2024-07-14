@@ -56,10 +56,10 @@ Artisan::command('app:queue-batch-check-response-time', function () {
 Artisan::command('app:queue-batch-check-ssl-validity', function () {
     foreach (getWebsites() as $website) {
         $website->monitorLocations->each(function ($monitorLocation) use ($website) {
-            \App\Jobs\Monitors\CheckSSLValidity::dispatch($website);
+            \App\Jobs\Monitors\CheckSSLValidity::dispatch($website, $monitorLocation);
         });
     }
-})->dailyAt('01:00');
+})->dailyAt('03:00');
 
 /**
  * Monitor: SSL Expiration
@@ -67,10 +67,10 @@ Artisan::command('app:queue-batch-check-ssl-validity', function () {
 Artisan::command('app:queue-batch-check-ssl-expiration', function () {
     foreach (getWebsites() as $website) {
         $website->monitorLocations->each(function ($monitorLocation) use ($website) {
-            \App\Jobs\Monitors\CheckSSLExpiration::dispatch($website);
+            \App\Jobs\Monitors\CheckSSLExpiration::dispatch($website, $monitorLocation);
         });
     }
-})->dailyAt('02:00');
+})->dailyAt('05:00');
 
 /**
  * Monitor: Domain Expiration
@@ -78,10 +78,10 @@ Artisan::command('app:queue-batch-check-ssl-expiration', function () {
 Artisan::command('app:queue-batch-check-domain-expiration', function () {
     foreach (getWebsites() as $website) {
         $website->monitorLocations->each(function ($monitorLocation) use ($website) {
-            \App\Jobs\Monitors\CheckDomainExpiration::dispatch($website);
+            \App\Jobs\Monitors\CheckDomainExpiration::dispatch($website, $monitorLocation);
         });
     }
-})->dailyAt('03:00');
+})->dailyAt('07:00');
 
 /**
  * Monitor: Domain Nameservers
@@ -89,7 +89,7 @@ Artisan::command('app:queue-batch-check-domain-expiration', function () {
 Artisan::command('app:queue-batch-check-domain-ns', function () {
     foreach (getWebsites() as $website) {
         $website->monitorLocations->each(function ($monitorLocation) use ($website) {
-            \App\Jobs\Monitors\CheckDomainNameservers::dispatch($website);
+            \App\Jobs\Monitors\CheckDomainNameservers::dispatch($website, $monitorLocation);
         });
     }
-})->dailyAt('04:00');
+})->dailyAt('09:00');
