@@ -27,6 +27,7 @@ const baseClasses: String = "v-paragraph";
 const colors: { [key: string]: string } = {
     default: "text-gray-600",
     muted: "text-gray-500",
+    mutedLight: "text-gray-200",
     primary: "text-primary-500",
     secondary: "text-secondary-500",
     success: "text-success-500",

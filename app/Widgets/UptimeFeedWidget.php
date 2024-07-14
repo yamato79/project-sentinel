@@ -52,6 +52,7 @@ class UptimeFeedWidget
                     'app_locations' => $appLocations,
                     'avg_uptime_percent' => $row->avg('avg_uptime_percent'),
                     'minute' => $row->first()->minute,
+                    'date' => Carbon::parse($row->first()->minute)->format('h:i A'),
                     'website_id' => $row->first()->website_id,
                 ];
             });

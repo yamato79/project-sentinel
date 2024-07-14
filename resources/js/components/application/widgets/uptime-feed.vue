@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
+import Paragraph from "@/components/paragraph.vue";
 import Spinner from "@/components/spinner.vue";
 
 const props = defineProps({
@@ -21,6 +22,7 @@ const uptimeData = ref<{
     app_locations: any[];
     avg_uptime_percent: number;
     minute: string;
+    date: string;
     website_id: number;
 }[]>([]);
 
@@ -98,33 +100,40 @@ const getClass = (uptime: number) => {
         <template v-else>
             <div class="w-full flex items-center gap-[2px]">
                 <template v-for="(uptimeTick, uptimeTickIndex) in uptimeData" :key="'uptimeTick_' + uptimeTickIndex">
-                    <div :class="[
-                        getClass(uptimeTick.avg_uptime_percent), 
-                        'w-full flex-1 group hover:opacity-80 relative h-8 bg-gray-200 rounded-sm cursor-pointer z-50'
-                    ]">
-                        <span class="group-hover:opacity-100 transition-opacity bg-gray-900 px-2 py-1 text-xs text-gray-100 rounded absolute left-1/2 -translate-x-1/2 translate-y-6 opacity-0 m-4 mx-auto whitespace-nowrap pointer-events-none" style="z-index: 99999">
-                            <span class="font-bold text-white border-b border-gray-300">
-                                {{ uptimeTick.minute }}
-                            </span>
+                    <VTooltip class="flex-1">
+                        <div :class="[getClass(uptimeTick.avg_uptime_percent), 'w-full hover:opacity-80 h-8 rounded-sm cursor-pointer']">
+                            <!-- -->
+                        </div>
 
-                            <template v-if="uptimeTick.avg_uptime_percent === null">
-                                No Data
-                            </template>
+                        <template #popper>
+                            <div class="flex flex-col gap-1">
+                                <Paragraph color="mutedLight" size="xs" class="text-right font-bold">
+                                    {{ uptimeTick.date }}
+                                </Paragraph>
 
-                            <template v-else>
-                                <template v-for="(uptimePercent, monitorLocationSlug) in uptimeTick.app_locations" :key="'uptimeLocation_' + monitorLocationSlug">
-                                    <div class="flex items-center justify-between gap-x-1">
-                                        <div>{{ monitorLocationSlug }}: </div>
-                                        <div class="font-semibold">{{ uptimePercent }}%</div>
-                                    </div>
-                                </template>
+                                <div class="border-t border-b py-1 border-gray-900">
+                                    <template v-if="uptimeTick.avg_uptime_percent === null">
+                                        <Paragraph color="mutedLight" size="xs" class="text-right">
+                                            No Data
+                                        </Paragraph>
+                                    </template>
 
-                                <div class="border-t border-gray-300 text-right font-semibold">
-                                    {{ uptimeTick.avg_uptime_percent }}%
+                                    <template v-else>
+                                        <template v-for="(uptimePercent, monitorLocationSlug) in uptimeTick.app_locations" :key="'uptimeLocation_' + monitorLocationSlug">
+                                            <Paragraph color="mutedLight" size="xs" class="grid grid-cols-2">
+                                                <div>{{ monitorLocationSlug }}: </div>
+                                                <div class="text-right">{{ uptimePercent }}%</div>
+                                            </Paragraph>
+                                        </template>
+                                    </template>
                                 </div>
-                            </template>
-                        </span>
-                    </div>
+
+                                <Paragraph color="mutedLight" size="xs" class="text-right">
+                                    {{ uptimeTick.avg_uptime_percent }}%
+                                </Paragraph>
+                            </div>
+                        </template>
+                    </VTooltip>
                 </template>
             </div>
         </template>

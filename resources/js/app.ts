@@ -1,5 +1,7 @@
 import "../css/app.css";
 
+import FloatingVue from "floating-vue";
+import "floating-vue/dist/style.css";
 import { createApp, h, DefineComponent } from "vue";
 import { createInertiaApp } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
@@ -7,7 +9,6 @@ import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCheck, faCheckCircle, faLongArrowLeft, faDisplay, faGlobe, faGear, faPlus, faRotate, faRightFromBracket, faSave, faPaperPlane, faSearch, faTimes, faTimesCircle, faTrash, faUserCircle, faUserGear, faSignOutAlt, faLayerGroup, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-
 library.add(
     faCheck,
     faCheckCircle,
@@ -40,6 +41,7 @@ createInertiaApp({
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .use(FloatingVue)
             .component("FontAwesomeIcon", FontAwesomeIcon)
             .mount(el);
     },
