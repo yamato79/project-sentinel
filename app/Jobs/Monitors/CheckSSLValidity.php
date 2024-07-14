@@ -10,6 +10,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 
@@ -40,6 +41,20 @@ class CheckSSLValidity implements ShouldQueue
         $this->website = $website;
         $this->monitorLocation = $monitorLocation;
         $this->monitorType = MonitorType::findOrFail(MonitorType::SSL_VALIDITY);
+    }
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array<int, object>
+     */
+    public function middleware(): array
+    {
+        return [
+            (new WithoutOverlapping(
+                $this->website->getKey().'-'.$this->monitorLocation->getKey()
+            ))->dontRelease()->expireAfter(60),
+        ];
     }
 
     /**
