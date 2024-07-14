@@ -55,7 +55,7 @@ class UptimeTrendWidget
             'labels' => [],
             'datasets' => [],
         ];
-        
+
         foreach ($this->getUptimeForPeriod(now()->subHours($this->request->hours), now()) as $monitorLocationSlug => $uptimeData) {
             $monitorLocation = MonitorLocation::where('slug', $monitorLocationSlug)->firstOrFail();
 

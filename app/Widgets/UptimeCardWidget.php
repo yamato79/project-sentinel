@@ -3,8 +3,8 @@
 namespace App\Widgets;
 
 use App\Models\Website;
-use Carbon\CarbonPeriod;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -34,8 +34,8 @@ class UptimeCardWidget
             ->toArray();
 
         $period = CarbonPeriod::create(
-            $startDate->startOfHour(), 
-            '1 hour', 
+            $startDate->startOfHour(),
+            '1 hour',
             $endDate->startOfHour()
         );
 
