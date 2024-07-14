@@ -3,6 +3,7 @@
 namespace App\Widgets;
 
 use App\Models\Website;
+use Carbon\CarbonPeriod;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -32,14 +33,33 @@ class UptimeCardWidget
             ->pluck('website_id')
             ->toArray();
 
-        return DB::table('v_website_uptime_history')
+        $period = CarbonPeriod::create(
+            $startDate->startOfHour(), 
+            '1 hour', 
+            $endDate->startOfHour()
+        );
+
+        $filledResults = [];
+
+        foreach ($period as $date) {
+            $formattedDate = $date->format('Y-m-d H:i:s');
+            $filledResults[$formattedDate] = 0;
+        }
+
+        $results = DB::table('v_website_uptime_history')
             ->whereIn('website_id', $availableWebsiteIds)
             ->whereBetween('hour', [$startDate, $endDate])
             ->when($this->request->filled('website_id'), function ($query) {
                 $query->where('website_id', $this->request->get('website_id'));
             })
             ->get()
-            ->avg('avg_uptime_percent');
+            ->groupBy('hour')
+            ->map(function ($result) {
+                return $result->avg('avg_uptime_percent');
+            })
+            ->toArray();
+
+        return collect(array_merge($filledResults, $results))->avg();
     }
 
     /**
