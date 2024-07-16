@@ -37,7 +37,7 @@ class Stack extends Model
     ];
 
     /**
-     * The booted function of the model.
+     * The "booted" method of the model.
      */
     protected static function booted()
     {

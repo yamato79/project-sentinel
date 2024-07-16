@@ -5,6 +5,7 @@ namespace Database\Seeders\Production;
 use App\Models\NotificationChannelDriver;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use NotificationChannels\Webhook\WebhookChannel;
 
 class NotificationChannelDriverSeeder extends Seeder
 {
@@ -17,6 +18,7 @@ class NotificationChannelDriverSeeder extends Seeder
             [
                 'name' => 'Webhook', 
                 'slug' => 'webhook', 
+                'class' => WebhookChannel::class,
                 'description' => 'Sends an HTTP POST request to the target URL.',
                 'is_active' => true,
                 'fields' => [

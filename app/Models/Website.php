@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\NotificationChannelDriver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
 class Website extends Model
 {
     use HasFactory;
+    use Notifiable;
 
     /**
      * The table associated with the model.
@@ -39,21 +42,11 @@ class Website extends Model
     ];
 
     /**
-     * The booted function of the model.
+     * The "booted" method of the model.
      */
     protected static function booted()
     {
         parent::booted();
-
-        static::creating(function ($website) {
-            if (empty($website->created_by_user_id)) {
-                $website->created_by_user_id = auth()->user()->getKey();
-            }
-
-            if (empty($website->slug)) {
-                $website->slug = Str::slug($website->name).'-'.strtolower(Str::random(12));
-            }
-        });
 
         static::addGlobalScope('orderByName', function ($builder) {
             $builder->orderBy('name');
@@ -91,6 +84,22 @@ class Website extends Model
     public function getIsMonitorActiveAttribute()
     {
         return $this->website_status_id !== WebsiteStatus::PAUSED;
+    }
+
+    /**
+     * Notification Route: 'Webhook'.
+     */
+    public function routeNotificationForWebhook()
+    {
+        $channelFieldValues = $this->notificationChannels()
+            ->where('notification_channel_driver_id', NotificationChannelDriver::WEBHOOK)
+            ->where('is_active', true)
+            ->pluck('field_values')
+            ->first();
+
+        return isset($channelFieldValues['webhook_url'])
+            ? $channelFieldValues['webhook_url']
+            : null;
     }
 
     /**

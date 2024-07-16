@@ -18,6 +18,7 @@ class NotificationChannelDriverResource extends JsonResource
             'notification_channel_driver_id' => $this->getKey(),
             'name' => $this->name,
             'slug' => $this->slug,
+            'class' => $this->class,
             'description' => $this->description,
             'fields' => $this->fields,
             'is_active' => $this->is_active,

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('notification_channel_driver_id');
             $table->string('name');
             $table->string('slug')->unique();
+            $table->string('class')->unique();
             $table->string('description')->nullable();
             $table->jsonb('fields');
             $table->jsonb('validator_rules');

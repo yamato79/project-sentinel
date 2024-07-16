@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 
 class NotificationChannelDriver extends Model
 {
+    const WEBHOOK = 1;
+
     /**
      * The table associated with the model.
      *
@@ -29,6 +31,7 @@ class NotificationChannelDriver extends Model
     protected $fillable = [
         'name',
         'slug',
+        'class',
         'description',
         'fields',
         'validator_rules',
@@ -52,7 +55,7 @@ class NotificationChannelDriver extends Model
     }
 
     /**
-     * The booted function of the model.
+     * The "booted" method of the model.
      */
     protected static function booted()
     {

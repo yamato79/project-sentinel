@@ -20,6 +20,10 @@ return new class extends Migration
             $table->foreignId('website_id')->references('website_id')->on('websites')->onDelete('cascade')->index()->name('fk_notification_channels_website_id');
             $table->timestamps();
         });
+
+        Schema::table('notification_channels', function ($table) {
+            $table->unique(['notification_channel_driver_id', 'website_id']);
+        });
     }
 
     /**
