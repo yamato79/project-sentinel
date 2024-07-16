@@ -107,8 +107,8 @@ class Website extends Model
     public function monitorLocations()
     {
         return $this->belongsToMany(MonitorLocation::class, 'pivot_monitor_locations_websites', 'website_id', 'monitor_location_id')
-            ->withTimestamps()
-            ->using(Pivot\MonitorLocationWebsite::class);
+            ->using(Pivot\MonitorLocationWebsite::class)
+            ->withTimestamps();
     }
 
     /**
@@ -118,6 +118,24 @@ class Website extends Model
     {
         return $this->hasMany(MonitorQueue::class, 'website_id', 'website_id')
             ->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Get the notification channels that belong to the website.
+     */
+    public function notificationChannels()
+    {
+        return $this->hasMany(NotificationChannel::class, 'website_id', 'website_id');
+    }
+
+    /**
+     * Get the notification types that the website belongs to.
+     */
+    public function notificationTypes()
+    {
+        return $this->belongsToMany(NotificationType::class, 'pivot_notification_types_websites', 'website_id', 'notification_type_id')
+            ->using(Pivot\NotificationTypeWebsite::class)
+            ->withTimestamps();
     }
 
     /**

@@ -25,7 +25,7 @@
                             </div>
 
                             <div class="flex items-center gap-x-4 lg:gap-x-6">
-                                <Link :href="route('panel.profile.edit')" class="group hidden sm:flex items-center gap-2 font-medium leading-6 text-sm text-gray-500 hover:text-gray-700 transition-all ease-in-out duration-300">
+                                <Link :href="route('panel.me.profile')" class="group hidden sm:flex items-center gap-2 font-medium leading-6 text-sm text-gray-500 hover:text-gray-700 transition-all ease-in-out duration-300">
                                     {{ $page.props.auth.user.name }}
                                 </Link>
 

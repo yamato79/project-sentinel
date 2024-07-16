@@ -13,8 +13,22 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        $checkout = auth()->user()->subscribe('pri_01j26186n36dt6x8tw9g6ph8tj', 'default')
+            ->returnTo(route('panel.dashboard'));
+
+        $paddle = [
+            'items' => $checkout->getItems(),
+            'customer' => $checkout->getCustomer(),
+            'options' => $checkout->options(),
+        ];
+
+        $paddle['options']['settings']['displayMode'] = 'overlay';
+        $paddle['options']['settings']['allowLogout'] = false;
+
         return Inertia::render('panel/dashboard/index', [
             'websiteStatusDistribution' => $this->getWebsiteStatusDistribution(),
+            'paddle' => $paddle,
+            'checkout' => $checkout,
             'breadcrumbs' => [
                 ['label' => 'Dashboard', 'href' => route('panel.dashboard')],
             ],
@@ -47,7 +61,6 @@ class DashboardController extends Controller
             'offline' => 'rgba(244, 63, 94, 1)', // Rose 500
             'default' => 'rgba(201, 203, 207, 1)',
         ];
-        
 
         // Map the data for Chart.js
         $chartData = [

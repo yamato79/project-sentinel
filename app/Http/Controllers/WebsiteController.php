@@ -5,9 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Website\CreateWebsiteRequest;
 use App\Http\Requests\Website\DeleteWebsiteRequest;
 use App\Http\Requests\Website\UpdateWebsiteRequest;
+use App\Http\Requests\Website\UpdateWebsiteNotificationChannelsRequest;
+use App\Http\Requests\Website\UpdateWebsiteNotificationSettingsRequest;
 use App\Http\Resources\MonitorLocationResource;
+use App\Http\Resources\NotificationChannelDriverResource;
+use App\Http\Resources\NotificationTypeResource;
 use App\Http\Resources\WebsiteResource;
 use App\Models\MonitorLocation;
+use App\Models\NotificationChannelDriver;
+use App\Models\NotificationType;
 use App\Models\Website;
 use DB;
 use Illuminate\Http\Request;
@@ -121,6 +127,39 @@ class WebsiteController extends Controller
     }
 
     /**
+     * Update the specified resource's notification settings in storage.
+     */
+    public function updateNotificationSettings(UpdateWebsiteNotificationSettingsRequest $request, Website $website)
+    {
+        $website->notificationTypes()->sync($request->validated()['notification_type_ids']);
+        return redirect()->back();
+    }
+
+    /**
+     * Update the specified resource's notification channels in storage.
+     */
+    public function updateNotificationChannels(UpdateWebsiteNotificationChannelsRequest $request, Website $website)
+    {
+        foreach($request->validated()['notification_channels'] as $notificationChannelDriverId => $data) {
+            logger()->info($notificationChannelDriverId, [
+                'data' => $data,
+                'raw' => $request->validated(),
+            ]);
+
+            $notificationChannel = $website->notificationChannels()
+                ->updateOrCreate([
+                    'notification_channel_driver_id' => $notificationChannelDriverId,
+                ], [
+                    'name' => $notificationChannelDriverId,
+                    'field_values' => $data['field_values'],
+                    'is_active' => $data['is_active'],
+                ]);
+        }
+        
+        return redirect()->back();
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(DeleteWebsiteRequest $request, Website $website)
@@ -145,6 +184,13 @@ class WebsiteController extends Controller
         ];
 
         if (Gate::check('update', $website)) {
+            $tabs[] = [
+                'label' => 'Notifications',
+                'href' => route('panel.websites.edit.notifications', [
+                    'website' => $website,
+                ]),
+            ];
+
             $tabs[] = [
                 'label' => 'Settings',
                 'href' => route('panel.websites.edit.settings', [
@@ -174,6 +220,43 @@ class WebsiteController extends Controller
                 ['label' => 'Websites', 'href' => route('panel.websites.index')],
                 ['label' => $website->name, 'href' => route('panel.websites.edit', ['website' => $website])],
                 ['label' => 'Summary', 'href' => route('panel.websites.edit.summary', ['website' => $website])],
+            ],
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function getNotificationsPage(Request $request, Website $website)
+    {
+        Gate::authorize('view', $website);
+        Gate::authorize('update', $website);
+
+        $website->load([
+            'monitorLocations' => function ($query) {
+                $query->where('monitor_locations.is_active', true);
+            },
+            'notificationChannels',
+            'notificationTypes' => function ($query) {
+                $query->where('notification_types.is_active', true);
+            },
+            'websiteStatus',
+        ]);
+
+        $monitorLocations = MonitorLocation::query()
+            ->where('is_active', true)
+            ->get();
+
+        return Inertia::render('panel/websites/edit/notifications', [
+            'website' => new WebsiteResource($website),
+            'tabs' => $this->getEditTabs($website),
+            'monitorLocations' => MonitorLocationResource::collection($monitorLocations),
+            'notificationChannelDrivers' => NotificationChannelDriverResource::collection(NotificationChannelDriver::where('is_active', true)->get()),
+            'notificationTypes' => NotificationTypeResource::collection(NotificationType::where('is_active', true)->get()),
+            'breadcrumbs' => [
+                ['label' => 'Websites', 'href' => route('panel.websites.index')],
+                ['label' => $website->name, 'href' => route('panel.websites.edit', ['website' => $website])],
+                ['label' => 'Notifications', 'href' => route('panel.websites.edit.notifications', ['website' => $website])],
             ],
         ]);
     }

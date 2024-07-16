@@ -2,13 +2,15 @@ import { PageProps as InertiaPageProps } from "@inertiajs/core";
 import { AxiosInstance } from "axios";
 import { route as ziggyRoute } from "ziggy-js";
 import { PageProps as AppPageProps } from "./";
+import { Paddle } from "@paddle/paddle-js/types";
 
 declare global {
     interface Window {
         axios: AxiosInstance;
     }
-
+    
     const route: typeof ziggyRoute;
+    const Paddle: Paddle;
 }
 
 declare module "vue" {
@@ -303,4 +305,4 @@ declare module "vue-chartjs" {
     export class mixins extends Component {
         static reactiveProp: any;
     }
-  }
+}

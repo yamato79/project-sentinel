@@ -14,6 +14,7 @@
         @routes
         @vite(['resources/js/app.ts', "resources/js/pages/{$page['component']}.vue"])
         @inertiaHead
+        @paddleJS
     </head>
     <body class="font-sans antialiased">
         @inertia

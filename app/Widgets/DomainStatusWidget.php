@@ -66,7 +66,7 @@ class DomainStatusWidget
                 ->get();
 
             $monitorLocations->each(function ($monitorLocation) use ($website) {
-                \App\Jobs\Monitors\CheckDomainExpiration::dispatch($website, $monitorLocation);
+                \App\Jobs\Monitors\CheckDomainExpiration::dispatchSync($website, $monitorLocation);
             });
 
             return [

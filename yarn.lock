@@ -161,21 +161,21 @@
 
 "@floating-ui/core@^1.1.0":
   version "1.6.4"
-  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.6.4.tgz#0140cf5091c8dee602bff9da5ab330840ff91df6"
+  resolved "https://registry.npmjs.org/@floating-ui/core/-/core-1.6.4.tgz"
   integrity sha512-a4IowK4QkXl4SCWTGUR0INAfEOX3wtsYw3rKK5InQEHMGObkR8Xk44qYQD9P4r6HHw0iIfK6GUKECmY8sTkqRA==
   dependencies:
     "@floating-ui/utils" "^0.2.4"
 
 "@floating-ui/dom@~1.1.1":
   version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.1.1.tgz#66aa747e15894910869bf9144fc54fc7d6e9f975"
+  resolved "https://registry.npmjs.org/@floating-ui/dom/-/dom-1.1.1.tgz"
   integrity sha512-TpIO93+DIujg3g7SykEAGZMDtbJRrmnYRCNYSjJlvIbGhBjRSNTLVbNeDQBrzy9qDgUbiWdc7KA0uZHZ2tJmiw==
   dependencies:
     "@floating-ui/core" "^1.1.0"
 
 "@floating-ui/utils@^0.2.4":
   version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.4.tgz#1d459cee5031893a08a0e064c406ad2130cced7c"
+  resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.4.tgz"
   integrity sha512-dWO2pw8hhi+WrXq1YJy2yCuWoL20PddgGaqTgVe4cOS9Q6qklXCiA1tJEqX6BEwRNSCP84/afac9hd4MS+zEUA==
 
 "@fortawesome/fontawesome-common-types@6.5.2":
@@ -321,6 +321,11 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@paddle/paddle-js@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@paddle/paddle-js/-/paddle-js-1.2.0.tgz#7738072ac7963b8ad8c745f20c5075c0ad697747"
+  integrity sha512-NPjFH5uK+AsMIxcyT2ERhJXhAcvotox45FUbxeuoIONMp6cM7/xse5X2qBz9ZoCaKGi5RdS8cdmd1bLob1I+wA==
 
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
@@ -1307,7 +1312,7 @@ flatted@^3.2.9:
 
 floating-vue@^5.2.2:
   version "5.2.2"
-  resolved "https://registry.yarnpkg.com/floating-vue/-/floating-vue-5.2.2.tgz#e263932042753f59f3e36e7c1188f3f3e272a539"
+  resolved "https://registry.npmjs.org/floating-vue/-/floating-vue-5.2.2.tgz"
   integrity sha512-afW+h2CFafo+7Y9Lvw/xsqjaQlKLdJV7h1fCHfcYQ1C4SVMlu7OAekqWgu5d4SgvkBVU0pVpLlVsrSTBURFRkg==
   dependencies:
     "@floating-ui/dom" "~1.1.1"
@@ -2320,7 +2325,7 @@ vue-eslint-parser@^9.3.1, vue-eslint-parser@^9.4.2:
 
 vue-resize@^2.0.0-alpha.1:
   version "2.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/vue-resize/-/vue-resize-2.0.0-alpha.1.tgz#43eeb79e74febe932b9b20c5c57e0ebc14e2df3a"
+  resolved "https://registry.npmjs.org/vue-resize/-/vue-resize-2.0.0-alpha.1.tgz"
   integrity sha512-7+iqOueLU7uc9NrMfrzbG8hwMqchfVfSzpVlCMeJQe4pyibqyoifDNbKTZvwxZKDvGkB+PdFeKvnGZMoEb8esg==
 
 vue-template-compiler@^2.7.14:

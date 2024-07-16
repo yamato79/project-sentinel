@@ -6,6 +6,6 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-const baseClasses: String = "v-card relative bg-white rounded shadow z-10";
+const baseClasses: String = "v-card relative bg-white bg-opacity-90 rounded shadow z-10";
 const classes = ref(`${baseClasses}`);
 </script>

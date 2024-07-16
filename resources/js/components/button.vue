@@ -35,6 +35,11 @@ const props = defineProps({
         default: () => "md",
         validator: (value: string) => ["xs", "sm", "md", "lg", "xl"].includes(value)
     },
+    target: {
+        type: String,
+        default: () => null,
+        required: false,
+    },
 });
 
 const baseClasses: String = "v-button flex w-full items-center justify-center gap-2 rounded border capitalize transition-all ease-in-out duration-300";
@@ -63,21 +68,41 @@ const classes = computed(() => `${baseClasses} ${colors[props.color]} ${sizes[pr
 <template>
     <div>
         <template v-if="props.href">
-            <span :class="props.disabled ? 'opacity-50 cursor-not-allowed' : ''">
-                <Link :href="props.href" :class="[classes, props.disabled ? 'pointer-events-none' : '']" v-bind="$attrs">
-                    <template v-if="isLoading">
-                        <Spinner color="white" size="xs"></Spinner>
-                    </template>
+            <template v-if="props.target === '_blank'">
+                <span :class="props.disabled ? 'opacity-50 cursor-not-allowed' : ''">
+                    <a :href="props.href" :class="[classes, props.disabled ? 'pointer-events-none' : '']" :target="props.target" v-bind="$attrs">
+                        <template v-if="isLoading">
+                            <Spinner color="white" size="xs"></Spinner>
+                        </template>
 
-                    <template v-else>
-                        <div v-if="$slots.icon">
-                            <slot name="icon"></slot>
-                        </div>
-                    </template>
+                        <template v-else>
+                            <div v-if="$slots.icon">
+                                <slot name="icon"></slot>
+                            </div>
+                        </template>
 
-                    <slot></slot>
-                </Link>
-            </span>
+                        <slot></slot>
+                    </a>
+                </span>
+            </template>
+
+            <template v-else>
+                <span :class="props.disabled ? 'opacity-50 cursor-not-allowed' : ''">
+                    <Link :href="props.href" :class="[classes, props.disabled ? 'pointer-events-none' : '']" v-bind="$attrs">
+                        <template v-if="isLoading">
+                            <Spinner color="white" size="xs"></Spinner>
+                        </template>
+
+                        <template v-else>
+                            <div v-if="$slots.icon">
+                                <slot name="icon"></slot>
+                            </div>
+                        </template>
+
+                        <slot></slot>
+                    </Link>
+                </span>
+            </template>
         </template>
 
         <template v-else>

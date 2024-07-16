@@ -77,7 +77,7 @@ getData();
                     </p>
 
                     <div class="absolute right-6">
-                        <a href="#" :class="[isLoading ? 'pointer-events-none' : '', 'text-xs text-gray-400 hover:text-primary-600']" @click.stop="refreshData">
+                        <a :class="[isLoading ? 'pointer-events-none' : '', 'text-xs text-gray-400 hover:text-primary-600 cursor-pointer']" @click.stop="refreshData">
                             <FontAwesomeIcon icon="fa-solid fa-rotate" :class="[isLoading ? 'fa-spin' : '', 'w-4 h-4']" />
                         </a>
                     </div>

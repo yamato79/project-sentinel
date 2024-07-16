@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             Production\MonitorLocationSeeder::class,
             Production\MonitorTypeSeeder::class,
+            Production\NotificationChannelDriverSeeder::class,
+            Production\NotificationTypeSeeder::class,
             Production\WebsiteStatusSeeder::class,
         ]);
 

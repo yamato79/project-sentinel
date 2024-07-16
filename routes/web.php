@@ -10,14 +10,31 @@ Route::group(['as' => 'panel.', 'middleware' => ['auth', 'verified']], function 
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])
         ->name('dashboard');
 
-    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])
-        ->name('profile.edit');
+    Route::get('/me/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])
+        ->name('me.profile');
 
-    Route::patch('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])
+    Route::patch('/profile/update', [\App\Http\Controllers\ProfileController::class, 'update'])
         ->name('profile.update');
+
+    Route::get('/me/billing', [\App\Http\Controllers\ProfileController::class, 'getBillingPage'])
+        ->name('me.billing');
+
+    Route::patch('/me/billing/update', [\App\Http\Controllers\ProfileController::class, 'updateBilling'])
+        ->name('me.billing.update');
+
+    Route::post('/me/billing/subscriptions', [\App\Http\Controllers\ProfileController::class, 'createSubscription'])
+        ->name('me.billing.subscriptions.store');
+
+    Route::patch('/me/billing/subscriptions', [\App\Http\Controllers\ProfileController::class, 'updateSubscription'])
+        ->name('me.billing.subscriptions.update');
+
+    Route::delete('/me/billing/subscriptions', [\App\Http\Controllers\ProfileController::class, 'cancelSubscription'])
+        ->name('me.billing.subscriptions.destroy');
 
     Route::delete('/profile', [\App\Http\Controllers\ProfileController::class, 'destroy'])
         ->name('profile.destroy');
+
+    Route::view('/checkout', 'checkout');
 
     /**
      * Stacks
@@ -82,8 +99,17 @@ Route::group(['as' => 'panel.', 'middleware' => ['auth', 'verified']], function 
     Route::get('/websites/{website}/edit/summary', [\App\Http\Controllers\WebsiteController::class, 'getSummaryPage'])
         ->name('websites.edit.summary');
 
+    Route::get('/websites/{website}/edit/notifications', [\App\Http\Controllers\WebsiteController::class, 'getNotificationsPage'])
+        ->name('websites.edit.notifications');
+
     Route::get('/websites/{website}/edit/settings', [\App\Http\Controllers\WebsiteController::class, 'getSettingsPage'])
         ->name('websites.edit.settings');
+
+    Route::patch('/websites/{website}/edit/notifications/settings', [\App\Http\Controllers\WebsiteController::class, 'updateNotificationSettings'])
+        ->name('websites.edit.notifications.settings');
+
+    Route::patch('/websites/{website}/edit/notifications/channels', [\App\Http\Controllers\WebsiteController::class, 'updateNotificationChannels'])
+        ->name('websites.edit.notifications.channels');
 
     Route::resource('websites', \App\Http\Controllers\WebsiteController::class)
         ->except(['edit', 'show']);
@@ -118,6 +144,9 @@ Route::group(['prefix' => '/api', 'as' => 'api.', 'middleware' => ['auth', 'veri
 
     Route::get('/widgets/domain-nameservers-table', fn (Request $request) => (new \App\Widgets\DomainNameserversTableWidget($request))->getData())
         ->name('widgets.domain-nameservers-table');
+
+    Route::get('/widgets/domain-nameservers-table/execute', fn (Request $request) => (new \App\Widgets\DomainNameserversTableWidget($request))->execute())
+        ->name('widgets.domain-nameservers-table.execute');
 
 });
 

@@ -157,47 +157,6 @@ const submitDeleteForm = () => {
                 </Card>
             </SectionGridContent>
         </SectionGrid>
-
-        <SectionGrid>
-            <SectionGridSidebar>
-                <Heading :size="5">Notifcation Settings</Heading>
-                <Paragraph color="muted" size="sm">Control when and where you get notified of changes.</Paragraph>
-            </SectionGridSidebar>
-
-            <SectionGridContent>
-                <Card>
-                    <Form @submit.prevent="submitForm">
-                        <ContentBody class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <ul class="ml-6 list-decimal">
-                                <li>Website Status Changed</li>
-                                <li>Website Status Limited (Reminder)</li>
-                                <li>Website Status Offline (Reminder)</li>
-                                <li>Nameservers Changed</li>
-                                <li>Response Time Spike</li>
-                                <li>Domain Expiration (30D, 7D, 1D)</li>
-                                <li>Domain Expired (30D, 7D, 1D)</li>
-                                <li>SSL Certificate Expiration (30D, 7D, 1D)</li>
-                                <li>SSL Certificate Expired</li>
-                            </ul>
-
-                            <ul class="ml-6 list-decimal">
-                                <li>"Accept" new nameservers</li>
-                            </ul>
-                        </ContentBody>
-
-                        <ContentFoot>
-                            <Button type="submit" color="primary" :is-loading="form.processing" :disabled="form.processing || deleteForm.processing">
-                                <template #icon>
-                                    <FontAwesomeIcon icon="fa-solid fa-save" />
-                                </template>
-
-                                Save Changes
-                            </Button>
-                        </ContentFoot>
-                    </Form>
-                </Card>
-            </SectionGridContent>
-        </SectionGrid>
         
         <SectionGrid>
             <SectionGridSidebar>

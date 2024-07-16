@@ -18,7 +18,7 @@ const navigation = [
     { name: "Dashboard", href: route("panel.dashboard"), icon: "fa-solid fa-display" },
     { name: "Stacks",    href: route("panel.stacks.index"),  icon: "fa-solid fa-layer-group" },
     { name: "Websites", href: route("panel.websites.index"), icon: "fa-solid fa-globe" },
-    { name: "My Profile", href: route("panel.profile.edit"), icon: "fa-solid fa-user-gear" },
+    { name: "My Profile", href: route("panel.me.profile"), icon: "fa-solid fa-user-gear" },
     { name: "Sign out", href: route("logout"), icon: "fa-solid fa-right-from-bracket" }
 ];
 

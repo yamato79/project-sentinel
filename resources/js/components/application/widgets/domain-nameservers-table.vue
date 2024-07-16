@@ -29,7 +29,7 @@ const nameservers = ref<any>([
     // ...
 ]);
 
-(async () => {
+const getData = async () => {
     try {
         const response = await fetch(route("api.widgets.domain-nameservers-table", {
             website_id: props.websiteId,
@@ -47,16 +47,43 @@ const nameservers = ref<any>([
         }, 1000);
     } catch (error: any) {
         console.error(error);
+    }
+
+    isLoading.value = false;
+};
+
+const refreshData = async () => {
+    isLoading.value = true;
+
+    try {
+        await fetch(route("api.widgets.domain-nameservers-table.execute", { website_id: props.websiteId }));
+
+        setTimeout(async () => {
+            await getData();
+            isLoading.value = false;
+        }, 5000);
+    } catch (error) {
+        console.error(error);
         isLoading.value = false;
     }
-})();
+};
+
+getData();
 </script>
 
 <template>
     <ContentBody>
-        <p class="truncate text-sm font-medium text-gray-600">
-            Domain Nameservers History ({{ days }}D)
-        </p>
+        <div class="flex items-center justify-between">
+            <p class="truncate text-sm font-medium text-gray-600">
+                Domain Nameservers History ({{ days }}D)
+            </p>
+
+            <div>
+                <a :class="[isLoading ? 'pointer-events-none' : '', 'text-xs text-gray-400 hover:text-primary-600 cursor-pointer']" @click.stop="refreshData">
+                    <FontAwesomeIcon icon="fa-solid fa-rotate" :class="[isLoading ? 'fa-spin' : '', 'w-4 h-4']" />
+                </a>
+            </div>
+        </div>
     </ContentBody>
 
     <Table class="rounded-none border-t border-gray-200">

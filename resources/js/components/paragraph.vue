@@ -1,18 +1,12 @@
-<template>
-    <p :class="classes">
-        <slot></slot>
-    </p>
-</template>
-
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
     color: {
         type: String,
         default: "default",
         required: false,
-        validator: (value: string) => ["default", "muted", "primary", "secondary", "success", "warning", "danger"].includes(value)
+        validator: (value: string) => ["default", "muted", "mutedLight", "primary", "secondary", "success", "warning", "danger"].includes(value)
     },
     size: {
         type: String,
@@ -43,5 +37,11 @@ const sizes: { [key: string]: string } = {
     xl: "text-2xl"
 };
 
-const classes = ref(`${baseClasses} ${colors[props.color]} ${sizes[props.size]}`);
+const classes = computed(() => `${baseClasses} ${colors[props.color]} ${sizes[props.size]}`);
 </script>
+
+<template>
+    <p :class="classes">
+        <slot></slot>
+    </p>
+</template>

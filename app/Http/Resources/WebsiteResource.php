@@ -27,6 +27,8 @@ class WebsiteResource extends JsonResource
             'monitor_location_ids' => $this->whenLoaded('monitorLocations', function () {
                 return $this->monitorLocations->pluck('monitor_location_id');
             }),
+            'notification_channels' => NotificationChannelResource::collection($this->whenLoaded('notificationChannels')),
+            'notification_types' => NotificationTypeResource::collection($this->whenLoaded('notificationTypes')),
         ];
     }
 }

@@ -6,10 +6,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Paddle\Billable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use Billable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The table associated with the model.
@@ -60,7 +63,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the stacks that the website belongs to,
+     * Get the stacks that the website belongs to.
      */
     public function stacks()
     {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted } from "vue";
 import { Head } from "@inertiajs/vue3";
 import PanelLayout from "@/components/layouts/panel/index.vue";
 import Card from "@/components/card.vue";
@@ -17,6 +18,10 @@ defineOptions({
 });
 
 const props = defineProps({
+    paddle: {
+        type: Object,
+        required: false,
+    },
     uptimeCards: {
         type: Object,
         required: false,
@@ -33,6 +38,10 @@ const props = defineProps({
         default: () => {},
     },
 });
+
+onMounted(() => {
+    // Paddle.Checkout.open(props.paddle.options);
+});
 </script>
 
 <template>
@@ -48,6 +57,8 @@ const props = defineProps({
         </MountedTeleport>
 
         <Section>
+            <div class="paddle-checkout"></div>
+
             <SectionGroup>
                 <dl class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     <UptimeCard :title="'Uptime (24H)'" :hours="24" />

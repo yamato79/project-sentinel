@@ -15,5 +15,8 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     ziggy: Config & { location: string };
     query: {
         [key: string]: any
-    }
+    },
+    flash: {
+        [x: string]: any;
+    },
 };
